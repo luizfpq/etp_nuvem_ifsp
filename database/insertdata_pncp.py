@@ -97,4 +97,20 @@ def insert_compras_from_json(json_file_path):
         connection.close()
 
 if __name__ == "__main__":
-    insert_compras_from_json('/home/quirino/Documentos/github/etp_nuvem_ifsp/contratacoes_geral/geral_2021_6_raw.json')
+    #insert_compras_from_json('/home/quirino/Documentos/github/etp_nuvem_ifsp/contratacoes_geral/geral_2021_6_raw.json')
+
+    directory_path = '/home/quirino/Documentos/github/etp_nuvem_ifsp/contratacoes_geral'
+        
+    print(f"Iniciando o processamento dos arquivos JSON na pasta: {directory_path}\n")
+
+    if not os.path.isdir(directory_path):
+        print(f"Erro: O caminho especificado não é uma pasta válida: {directory_path}")
+    else:
+    # Percorre todos os arquivos no diretório
+        for file_name in os.listdir(directory_path):
+            if file_name.endswith('.json'):
+                # Cria o caminho completo para o arquivo
+                full_file_path = os.path.join(directory_path, file_name)
+                insert_compras_from_json(full_file_path)
+
+    print("\nProcessamento concluído.")
