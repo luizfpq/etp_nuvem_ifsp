@@ -17,7 +17,7 @@ def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, head
         end_date = datetime.now().strftime("%Y-%m-%d")
 
     params = {
-        "codigoOrgao": uasg_code,
+        "cnpjCpfOrgao": uasg_code,
         "dataPublicacaoPncpInicial": start_date,
         "dataPublicacaoPncpFinal": end_date,
         "codigoModalidade": modalidade_code,
@@ -33,7 +33,7 @@ def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, head
     while params["pagina"] <= total_pages:
         try:
             response = requests.get(base_url, params=params, headers=headers, timeout=timeout)
-            #print(response.url)
+            print(response.url)
             response.raise_for_status()
             data = response.json()
             
@@ -92,13 +92,13 @@ def main():
     
     current_year = datetime.now().year
     years_to_fetch = range(current_year - 1, current_year + 1) # varia os anos a partir do atual
-    #modalidade_codes = range(1, 15) # Codes from 1 to 14
-    modalidade_codes = [6, 8, 9, 11, 12] # Read dominios.md
+    modalidade_codes = range(1, 15) # Codes from 1 to 14
+    #modalidade_codes = [6, 8, 9, 11, 12] # Read dominios.md
 
     print(f"\nIniciando a busca por contratações para {len(uasgs_list)} órgãos nos anos de {min(years_to_fetch)} a {max(years_to_fetch)} para as modalidades de {min(modalidade_codes)} a {max(modalidade_codes)}.")
     
     for orgao in uasgs_list:
-        uasg_code = orgao.get("codigoOrgao")
+        uasg_code = orgao.get("cnpjCpfOrgao")
         if uasg_code:
             for year in years_to_fetch:
                 for modalidade in modalidade_codes:
