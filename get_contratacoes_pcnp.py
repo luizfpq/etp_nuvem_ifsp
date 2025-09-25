@@ -4,20 +4,23 @@ import json
 import time
 from datetime import datetime
 
-def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, headers, timeout=60):
+# Aumenta o timeout padrão para 180 segundos (3 minutos)
+DEFAULT_TIMEOUT = 180
+MAX_RETRIES = 3
+
+def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, headers):
     """
     Fetches contracting data for a specific UASG, year, and modality from the API,
-    handling pagination, and saves it to a JSON file.
+    handling pagination and timeouts, and saves it to a JSON file.
     """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
 
-    # For the current year, use today's date as the end date
     if year == datetime.now().year:
         end_date = datetime.now().strftime("%Y-%m-%d")
 
     params = {
-        "cnpjCpfOrgao": uasg_code,
+        "orgaoEntidadeCnpj": uasg_code,
         "dataPublicacaoPncpInicial": start_date,
         "dataPublicacaoPncpFinal": end_date,
         "codigoModalidade": modalidade_code,
@@ -27,38 +30,53 @@ def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, head
 
     all_results = []
     total_pages = 1
-
+    
     print(f"Buscando contratações para o órgão {uasg_code} no ano {year}, modalidade {modalidade_code}...")
 
     while params["pagina"] <= total_pages:
-        try:
-            response = requests.get(base_url, params=params, headers=headers, timeout=timeout)
-            print(response.url)
-            response.raise_for_status()
-            data = response.json()
+        retries = 0
+        success = False
+        while retries < MAX_RETRIES and not success:
+            try:
+                response = requests.get(base_url, params=params, headers=headers, timeout=DEFAULT_TIMEOUT)
+                print(response.url)
+                response.raise_for_status()
+                data = response.json()
+                success = True
+                
+                if data:
+                    if params["pagina"] == 1:
+                        total_pages = data.get("totalPaginas", 1)
+                        if total_pages == 0:
+                            print(f"  Nenhum resultado encontrado para o órgão {uasg_code} no ano {year}, modalidade {modalidade_code}.")
+                            break
+                    
+                    results = data.get("resultado", [])
+                    all_results.extend(results)
+                    
+                    print(f"  Página {params['pagina']} de {total_pages} obtida. Total de contratações: {len(all_results)}")
+                    
+                    params["pagina"] += 1
+                    time.sleep(1)
+                else:
+                    print(f"  Sem dados para o órgão {uasg_code} no ano {year}, modalidade {modalidade_code}.")
+                    break
             
-            if data:
-                if params["pagina"] == 1:
-                    total_pages = data.get("totalPaginas", 1)
-                
-                results = data.get("resultado", [])
-                all_results.extend(results)
-                
-                print(f"  Página {params['pagina']} de {total_pages} obtida. Total de contratações: {len(all_results)}")
-                
-                params["pagina"] += 1
-                time.sleep(1) # Delay between pages
-            else:
-                print(f"  Sem dados para o órgão {uasg_code} no ano {year}, modalidade {modalidade_code}.")
+            except (requests.exceptions.Timeout, requests.exceptions.ReadTimeout) as e:
+                retries += 1
+                print(f"  Aviso: Erro de timeout ({e}). Tentativa {retries}/{MAX_RETRIES}...")
+                time.sleep(10) # Espera 10 segundos antes de tentar novamente
+            except requests.exceptions.RequestException as e:
+                print(f"  Erro inesperado ao acessar a API: {e}")
                 break
-
-        except requests.exceptions.RequestException as e:
-            print(f"  Erro ao acessar a API para o órgão {uasg_code} no ano {year}: {e}")
+            except json.JSONDecodeError as e:
+                print(f"  Erro ao decodificar JSON: {e}")
+                break
+        
+        if not success:
+            print(f"  Falha após {MAX_RETRIES} tentativas para a página {params['pagina']}. Pulando para a próxima página ou modalidade.")
             break
-        except json.JSONDecodeError as e:
-            print(f"  Erro ao decodificar JSON para o órgão {uasg_code} no ano {year}: {e}")
-            break
-    
+        
     if all_results:
         output_dir = "contratacoes"
         if not os.path.exists(output_dir):
@@ -91,9 +109,9 @@ def main():
     headers = {"Accept": "application/json"}
     
     current_year = datetime.now().year
-    years_to_fetch = range(current_year - 1, current_year + 1) # varia os anos a partir do atual
-    modalidade_codes = range(1, 15) # Codes from 1 to 14
-    #modalidade_codes = [6, 8, 9, 11, 12] # Read dominios.md
+    # Itera sobre os últimos 2 anos (ano atual e ano anterior)
+    years_to_fetch = range(current_year - 3, current_year + 1)
+    modalidade_codes = range(1, 15)
 
     print(f"\nIniciando a busca por contratações para {len(uasgs_list)} órgãos nos anos de {min(years_to_fetch)} a {max(years_to_fetch)} para as modalidades de {min(modalidade_codes)} a {max(modalidade_codes)}.")
     
@@ -103,7 +121,7 @@ def main():
             for year in years_to_fetch:
                 for modalidade in modalidade_codes:
                     fetch_and_save_contratacoes(uasg_code, year, modalidade, base_url, headers)
-                    time.sleep(2) # Delay between different UASG/Year/Modality combinations
+                    time.sleep(2)
 
 if __name__ == "__main__":
     main()
