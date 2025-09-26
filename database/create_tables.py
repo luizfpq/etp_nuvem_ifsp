@@ -15,7 +15,66 @@ DB_CONFIG = {
     'cursorclass': pymysql.cursors.DictCursor
 }
 
-def create_table():
+def create_table_itens_contratacoes():
+    connection = pymysql.connect(**DB_CONFIG)
+    try:
+        with connection.cursor() as cursor:
+            create_table_query = """
+                CREATE TABLE itens_contratacoes (
+                    idCompra VARCHAR(255),
+                    idCompraItem VARCHAR(255) PRIMARY KEY,
+                    idContratacaoPNCP VARCHAR(255),
+                    unidadeOrgaoCodigoUnidade VARCHAR(255),
+                    orgaoEntidadeCnpj VARCHAR(14),
+                    numeroItemPncp INTEGER,
+                    numeroItemCompra INTEGER,
+                    numeroGrupo INTEGER,
+                    descricaoResumida TEXT,
+                    materialOuServico VARCHAR(1),
+                    materialOuServicoNome VARCHAR(50),
+                    codigoClasse INTEGER,
+                    codigoGrupo INTEGER,
+                    codItemCatalogo INTEGER,
+                    descricaodetalhada TEXT,
+                    unidadeMedida VARCHAR(50),
+                    orcamentoSigiloso BOOLEAN,
+                    itemCategoriaIdPncp INTEGER,
+                    itemCategoriaNome VARCHAR(255),
+                    criterioJulgamentoIdPncp INTEGER,
+                    criterioJulgamentoNome VARCHAR(255),
+                    situacaoCompraItem VARCHAR(10),
+                    situacaoCompraItemNome VARCHAR(255),
+                    tipoBeneficio VARCHAR(10),
+                    tipoBeneficioNome VARCHAR(255),
+                    incentivoProdutivoBasico BOOLEAN,
+                    quantidade INTEGER,
+                    valorUnitarioEstimado NUMERIC(18, 2),
+                    valorTotal NUMERIC(18, 2),
+                    temResultado BOOLEAN,
+                    codFornecedor VARCHAR(14),
+                    nomeFornecedor VARCHAR(255),
+                    quantidadeResultado INTEGER,
+                    valorUnitarioResultado NUMERIC(18, 2),
+                    valorTotalResultado NUMERIC(18, 2),
+                    dataInclusaoPncp TIMESTAMP,
+                    dataAtualizacaoPncp TIMESTAMP,
+                    dataResultado TIMESTAMP,
+                    margemPreferenciaNormal BOOLEAN,
+                    percentualMargemPreferenciaNormal NUMERIC(5, 2),
+                    margemPreferenciaAdicional BOOLEAN,
+                    percentualMargemPreferenciaAdicional NUMERIC(5, 2),
+                    codigoNCM VARCHAR(255),
+                    descricaoNCM TEXT,
+                    numeroControlePNCPCompra VARCHAR(255)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """
+            cursor.execute(create_table_query)
+        connection.commit()
+        print("Tabela 'itens_contratacoes' criada com sucesso!")
+    finally:
+        connection.close()
+
+def create_table_compras_pncp():
     connection = pymysql.connect(**DB_CONFIG)
     try:
         with connection.cursor() as cursor:
@@ -81,7 +140,7 @@ def create_table():
     finally:
         connection.close()
 
-def create_uasg_table():
+def create_table_uasg():
     connection = pymysql.connect(**DB_CONFIG)
     try:
         with connection.cursor() as cursor:
@@ -113,5 +172,6 @@ def create_uasg_table():
         connection.close()
 
 if __name__ == "__main__":
-    create_table()
-    create_uasg_table()
+    create_table_compras_pncp()
+    create_table_uasg()
+    create_table_itens_contratacoes()
