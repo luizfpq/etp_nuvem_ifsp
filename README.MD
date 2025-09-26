@@ -1,6 +1,7 @@
 # Os domínios de dados do Portal Nacional de Contratações Públicas (PNCP) podem ser consultados em:  
-[https://pncp.gov.br/app/entidades-dominio](https://pncp.gov.br/app/entidades-dominio)
+[Entidades Dominio](https://pncp.gov.br/app/entidades-dominio)
 
+[Manual Consulta](https://www.gov.br/pncp/pt-br/central-de-conteudo/manuais/versoes-anteriores/ManualPNCPAPIConsultasVerso1.0.pdf)
 
 ------
 ## Modalidade da Contratação
