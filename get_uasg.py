@@ -4,7 +4,7 @@ import time
 
 def fetch_all_pages_data(base_url):
     """
-    Fetches data from all pages of the API and returns a combined list of results.
+    Busca todos os dados retornados(considerando a paginação) do endpoint e gera um arquivo json.
     """
     all_results = []
     page_number = 1
@@ -41,9 +41,6 @@ def fetch_all_pages_data(base_url):
     return all_results
 
 def main():
-    """
-    Main function to fetch data and save to a JSON file.
-    """
     base_url = "https://dadosabertos.compras.gov.br/modulo-uasg/2_consultarOrgao?pagina=1&cnpjCpfOrgaoVinculado=00394445000101&statusOrgao=true"
     print("Iniciando a requisição para a URL e processando o JSON...")
     

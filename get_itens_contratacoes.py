@@ -53,6 +53,8 @@ def insert_itens_contratacoes(data):
     """
     Insere os dados dos itens de contratação na tabela itens_contratacoes.
     Usa um lock para garantir que a inserção seja thread-safe.
+    @todo: necessita melhorar a manipulação das threads e dos timeouts, continua recebendo status 429, 
+    talvez a solução mais simples esteja em redirecionar o worker.
     """
     if not data:
         return
@@ -167,9 +169,6 @@ def worker():
         time.sleep(1) # Pequena pausa entre as requisições para evitar sobrecarga
 
 def main():
-    """
-    Função principal para orquestrar o processo.
-    """
     id_compras = get_all_id_compras()
     if not id_compras:
         print("Nenhum novo idCompra encontrado para processar. Finalizando.")

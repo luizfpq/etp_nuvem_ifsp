@@ -5,7 +5,7 @@
 
 ------
 ## Modalidade da Contratação
-    referência: codigoOrgao
+    referência: codigoModalidade
 
 
 | Código | Nome                          | Descrição                                                                                                                                                                                                 | Ativo |
@@ -32,32 +32,39 @@
     MariaDB 1
 
     select 
-        orgaoEntidadeRazaoSocial, unidadeOrgaoCodigoUnidade, unidadeOrgaoNomeUnidade, modalidadeNome, sum(valorTotalEstimado), sum(valorTotalHomologado)
+        orgaoEntidadeRazaoSocial,
+        unidadeOrgaoCodigoUnidade,
+        unidadeOrgaoNomeUnidade, 
+        modalidadeNome, 
+        sum(valorTotalEstimado), 
+        sum(valorTotalHomologado)
     from 
-        vw_compras_left_uasg where objetoCompra like "%nuvem%" or      informacaoComplementar like "%nuvem"
+        vw_compras_left_uasg
+    where objetoCompra like "%nuvem%" 
+        or informacaoComplementar like "%nuvem"
     group by 
         orgaoEntidadeRazaoSocial asc;
 
 
-    MariaDB 2
+    -- Seleciona 
 
     SELECT
-    orgaoEntidadeRazaoSocial,
-    unidadeOrgaoCodigoUnidade,
-    unidadeOrgaoNomeUnidade,
-    modalidadeNome,
-    SUM(valorTotalEstimado) AS somaValorTotalEstimado,
-    SUM(valorTotalHomologado) AS somaValorTotalHomologado
-FROM
-    vw_compras_left_uasg
-WHERE
-    objetoCompra LIKE "%nuvem%"
-    OR informacaoComplementar LIKE "%nuvem%"
-GROUP BY
-    orgaoEntidadeRazaoSocial,
-    unidadeOrgaoCodigoUnidade,
-    unidadeOrgaoNomeUnidade,
-    modalidadeNome
-ORDER BY
-    orgaoEntidadeRazaoSocial ASC,
-    modalidadeNome ASC;
+        orgaoEntidadeRazaoSocial,
+        unidadeOrgaoCodigoUnidade,
+        unidadeOrgaoNomeUnidade,
+        modalidadeNome,
+        SUM(valorTotalEstimado) AS somaValorTotalEstimado,
+        SUM(valorTotalHomologado) AS somaValorTotalHomologado
+    FROM
+        vw_compras_left_uasg
+    WHERE
+        objetoCompra LIKE "%nuvem%"
+        OR informacaoComplementar LIKE "%nuvem%"
+    GROUP BY
+        orgaoEntidadeRazaoSocial,
+        unidadeOrgaoCodigoUnidade,
+        unidadeOrgaoNomeUnidade,
+        modalidadeNome
+    ORDER BY
+        orgaoEntidadeRazaoSocial ASC,
+        modalidadeNome ASC;

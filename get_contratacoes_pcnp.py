@@ -10,8 +10,9 @@ MAX_RETRIES = 3
 
 def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, headers):
     """
-    Fetches contracting data for a specific UASG, year, and modality from the API,
-    handling pagination and timeouts, and saves it to a JSON file.
+    Busca as contratações por unidades organizacionais especificas, separando-as em 
+    arquivos json de acordo com orgaoEntidadeCnpj_ano_codigoModalidade
+    @todo: necessita melhorar a manipulação de falhas por resposta 429
     """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
@@ -89,9 +90,6 @@ def fetch_and_save_contratacoes(uasg_code, year, modalidade_code, base_url, head
         print(f"  Dados salvos em {file_path}")
 
 def main():
-    """
-    Main function to orchestrate the fetching of contracting data.
-    """
     uasg_data_file = "uasgs_raw_data.json"
     if not os.path.exists(uasg_data_file):
         print(f"Erro: O arquivo '{uasg_data_file}' não foi encontrado.")
@@ -109,7 +107,7 @@ def main():
     headers = {"Accept": "application/json"}
     
     current_year = datetime.now().year
-    # Itera sobre os últimos 2 anos (ano atual e ano anterior)
+    # Itera sobre os últimos x anos através do range gerado pelo ano atual
     years_to_fetch = range(current_year - 3, current_year + 1)
     modalidade_codes = range(1, 15)
 

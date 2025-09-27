@@ -4,8 +4,9 @@ import ollama
 
 def is_federal_institution_ollama(text, model_name="phi3"):
     """
-    Uses a local LLM via Ollama to check if the text mentions a federal
-    university or institute.
+    Usa um LLM local via Ollama para identificar se a instituição é
+    um instituto federal ou universidade federal
+    @note: feito apenas por curiosidade, não tem aplicação prática no resto do projeto
     """
     prompt = f"""
     A descrição é de uma universidade federal ou de um instituto federal?

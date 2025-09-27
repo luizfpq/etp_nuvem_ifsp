@@ -3,9 +3,6 @@ import subprocess
 import time
 
 def print_menu():
-    """
-    Displays the main menu options to the user.
-    """
     print("\n" + "="*40)
     print(" Menu Principal - Processamento de UASGs ")
     print("="*40)
@@ -16,9 +13,6 @@ def print_menu():
     print("="*40)
 
 def main():
-    """
-    Main function to run the interactive menu.
-    """
     while True:
         print_menu()
         choice = input("Por favor, selecione uma opção: ")
@@ -67,7 +61,7 @@ def main():
         else:
             print("Opção inválida. Por favor, escolha 1, 2, 3 ou x.")
             
-        time.sleep(2) # Give the user time to read the output
+        time.sleep(2) # Tempinho pra ler a saida
 
 if __name__ == "__main__":
     main()

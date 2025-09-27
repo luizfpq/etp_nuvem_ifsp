@@ -4,10 +4,11 @@ import json
 import time
 from datetime import datetime
 
+
 def fetch_and_save_all_contratacoes(year, modalidade_code, base_url, headers, timeout=60):
     """
-    Fetches contracting data for a specific year and modality across all organizations,
-    handling pagination, and saves it to a JSON file.
+    Busca dados de contratação de um ano e modalidade específico, de todas as organizações,
+    manipula a paginação e salva os arquivos em json separados por ano_codigoModalidade
     """
     start_date = f"{year}-01-01"
     end_date = f"{year}-12-31"
@@ -73,9 +74,6 @@ def fetch_and_save_all_contratacoes(year, modalidade_code, base_url, headers, ti
         print(f"  Dados salvos em {file_path}")
 
 def main():
-    """
-    Main function to orchestrate the fetching of all contracting data.
-    """
     base_url = "https://dadosabertos.compras.gov.br/modulo-contratacoes/1_consultarContratacoes_PNCP_14133"
     headers = {"Accept": "application/json"}
     
