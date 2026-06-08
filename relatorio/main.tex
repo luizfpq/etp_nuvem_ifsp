@@ -161,7 +161,14 @@ Processos com SRP & 31 (9,9\%) \\
 
 \subsection{Evolução temporal}
 
-A Tabela~\ref{tab:evolucao} evidencia crescimento de 875\% entre 2022 e 2024, com valores homologados em crescente (de R\$ 3,9M para R\$ 51M em 2025, ano parcial).
+A Tabela~\ref{tab:evolucao} e a Figura~\ref{fig:evolucao} evidenciam crescimento de 875\% entre 2022 e 2024, com valores homologados em crescente (de R\$ 3,9M para R\$ 51M em 2025, ano parcial).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{assets/fig-evolucao.pdf}
+\caption{Evolução temporal: processos (barras) e valor homologado (linha)}
+\label{fig:evolucao}
+\end{figure}
 
 \begin{table}[ht]
 \centering
@@ -202,6 +209,15 @@ Inexigibilidade & 42 & 0,0 & \num{3732015} & \num{3732015} \\
 
 O custo de oportunidade é expressivo: se os R\$ 64,6M em dispensas tivessem alcançado a mesma economicidade do Pregão (18,3\%), a economia adicional seria de aproximadamente R\$ 8,4M.
 
+A Figura~\ref{fig:boxplot} apresenta a dispersão dos valores homologados por modalidade, evidenciando que o Pregão concentra processos de maior valor com alta variabilidade, enquanto dispensas concentram-se na faixa inferior.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{assets/fig-boxplot.pdf}
+\caption{Distribuição de valores homologados por modalidade (processos $\leq$ R\$ 5M)}
+\label{fig:boxplot}
+\end{figure}
+
 \subsection{Indícios de fragmentação de despesas (QP2)}
 
 Foram identificadas 14 instituições com 3 ou mais dispensas de licitação para nuvem no mesmo exercício fiscal, totalizando R\$ 11,5 milhões em valores potencialmente fragmentados. A Tabela~\ref{tab:fragmentacao} apresenta os casos mais relevantes.
@@ -240,18 +256,26 @@ A ausência de 12,1\% dos valores de homologação compromete análises de econo
 
 \subsection{Especificidade técnica e economicidade (QP4)}
 
-Contrariando a hipótese inicial, não foi encontrada correlação significativa entre especificidade técnica do objeto e economicidade obtida:
+Para avaliar se a especificidade técnica dos Termos de Referência influencia a economicidade, aplicamos o teste de Mann-Whitney U (não paramétrico, adequado para distribuições assimétricas) sobre a economicidade individual de cada processo, agrupando em ``específicos'' (n=54, mencionam IaaS/PaaS/SaaS/provider) e ``genéricos'' (n=216).
 
 \begin{itemize}
-\item Processos com termos específicos (IaaS, PaaS, SaaS, AWS, Azure, etc.): \textbf{n=54}, economicidade \textbf{10,6\%};
-\item Processos com termos genéricos (nuvem, cloud, hospedagem): \textbf{n=216}, economicidade \textbf{11,9\%}.
+\item Específicos: mediana 0,0\%, média 9,1\%
+\item Genéricos: mediana 0,0\%, média 11,6\%
+\item Mann-Whitney $U = 5.964$, $p = 0{,}775$, $r_{rb} = -0{,}023$
 \end{itemize}
 
-Esse resultado sugere que o fator determinante para economicidade é a \textbf{modalidade de contratação} (competitiva vs. direta), e não a precisão da especificação técnica.
+O teste não rejeita $H_0$ ($p = 0{,}775 \gg 0{,}05$), com tamanho de efeito negligível ($r_{rb} = -0{,}023$). Conclui-se que \textbf{a especificidade técnica do objeto não influencia significativamente a economicidade obtida}. O fator determinante é a modalidade de contratação (competitiva vs. direta), não a precisão da descrição técnica.
 
 \subsection{Perfil institucional}
 
-A distribuição por tipo de instituição revela: universidades federais lideram com 176 processos (56\%), seguidas por institutos federais (107 processos, 34\%) e outros (31, 10\%). Geograficamente, concentra-se em MG (60), PR (31), DF (28), RS (25) e RJ (24).
+A distribuição por tipo de instituição revela: universidades federais lideram com 176 processos (56\%), seguidas por institutos federais (107 processos, 34\%) e outros (31, 10\%). A Figura~\ref{fig:uf} apresenta a distribuição geográfica.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{assets/fig-uf.pdf}
+\caption{Distribuição geográfica das contratações de nuvem (top 10 UFs)}
+\label{fig:uf}
+\end{figure}
 
 O amparo legal nas 193 dispensas distribui-se em: Art. 75, II --- contratações até R\$ 50.000 (129 processos, 66,8\%); Art. 75, IX --- empresa pública de TI/SERPRO (37 processos, 19,2\%); Art. 75, XV --- fundações de apoio (14 processos, 7,3\%); e outros incisos (13 processos, 6,7\%).
 
