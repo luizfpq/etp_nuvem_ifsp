@@ -45,7 +45,7 @@ CAMPOS_CSV = [
 ]
 
 
-def carregar_cnpjs_mec(path: str = "uasgs_raw_data.json") -> set:
+def carregar_cnpjs_mec(path: str = "data/uasgs_raw_data.json") -> set:
     """Carrega lista de CNPJs das autarquias do MEC."""
     with open(path, "r", encoding="utf-8") as f:
         uasgs = json.load(f)
