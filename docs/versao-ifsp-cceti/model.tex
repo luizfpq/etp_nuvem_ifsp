@@ -1,0 +1,207 @@
+\documentclass[a4paper,12pt]{article}
+
+
+% ===================================================
+% 1. CONFIGURAÇÃO BÁSICA E IDIOMA
+% ===================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{csquotes} % Necessário para biblatex
+\usepackage{indentfirst} % Recuo na primeira linha do parágrafo
+\usepackage[default,scale=0.95]{opensans} % Fonte OpenSans (confortável)
+\linespread{1.5} % Espaçamento 1.5
+\setlength{\parindent}{1.25cm} % Recuo de parágrafo ABNT (1.25cm)
+\setlength{\parskip}{0pt}
+
+% ===================================================
+% 2. CONFIGURAÇÃO DE PÁGINA E GEOMETRIA
+% ===================================================
+\usepackage[a4paper,top=3cm,bottom=4.5cm,left=3cm,right=2cm]{geometry}
+\usepackage{setspace} % Necessário para \onehalfspacing no corpo
+\usepackage{fancyhdr} % Para cabeçalho/rodapé personalizado
+
+% Ajuste de headheight (obrigatório para o fancyhdr)
+\setlength{\headheight}{28pt}
+
+% ===================================================
+% 3. REFERÊNCIAS BIBLIOGRÁFICAS (BIBLATEX & Biber)
+%
+% PARA FUNCIONAR:
+% 1. O arquivo referencias.bib deve existir.
+% 2. O Overleaf deve estar configurado para usar o 'Biber' como Ferramenta de Bibliografia.
+% 3. Você deve usar \cite{chave} no texto.
+% 4. A lista é impressa com \printbibliography
+% ===================================================
+% Usando estilo ABNT-numeric como base (ou adapte para 'authoryear' se preferir)
+\usepackage[
+    style=abnt-numeric, % Um estilo ABNT para biblatex. Pode requerer o pacote 'abntex2cite'.
+    backend=biber,      % Obriga o uso do Biber (crucial para Overleaf/Biblatex)
+    sorting=none,       % Ordem de aparecimento (padrão ABNT é por ordem de citação)
+    url=false,          % Opcional: desativa a impressão de URL no final da referência
+]{biblatex}
+
+% ===================================================
+% 4. PACOTES GRÁFICOS E ESPECIAIS
+% ===================================================
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{eso-pic} % Para posicionar logo e imagem de fundo
+\usepackage{enumitem} % Para melhor controle de listas
+\usepackage{hyperref} % Links e metadados
+
+% ===================================================
+% 5. PACOTES PARA TABELAS E NÚMEROS
+% ===================================================
+\usepackage{booktabs}   % Para \toprule, \midrule, \bottomrule (melhores linhas)
+\usepackage{longtable}  % Para tabelas longas que quebram entre páginas
+\usepackage{ltablex}    % Combina longtable e tabularx (para colunas X com quebra de linha)
+\keepXColumns            % Mantém as larguras das colunas X
+\usepackage{siunitx}    % Para formatar números (S-column)
+
+% Configuração de números ABNT (separador de milhar: '.', decimal: ',')
+\sisetup{
+    group-separator={.},
+    group-minimum-digits=4,
+    output-decimal-marker={,}
+}
+
+% ===================================================
+% 6. CORES, TÍTULOS E ESTILOS PERSONALIZADOS
+% ===================================================
+\definecolor{ifspgreen}{HTML}{2F9E41}
+
+% ------------ Links ------------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=ifspgreen,
+  citecolor=black,
+  pdfauthor={CCETI-DTI — Coordenadoria de Contratações Estratégicas de TI},
+  pdftitle={IFSP - Instituto Federal de Educação, Ciência e Tecnolgia de São Paulo},
+  pdfsubject={Estudo técnico auxiliar: Avaliação das práticas de contratação de serviços de
+computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação},
+  pdfcreator={Overleaf}
+}
+
+% ------------ Cabeçalho / Rodapé (profissional com faixa verde) ------------
+% [Código inalterado para manter seu estilo visual, apenas ajustei a ativação]
+\makeatletter
+\def\ps@fancy{%
+  \def\@oddhead{%
+    \hbox to\textwidth{%
+      \vbox to 26pt{%
+        \vfil
+        \hbox{\parbox{\textwidth}{\vspace{-4pt}\scriptsize
+          \textsf{CCETI-DTI — Coordenadoria de Contratações Estratégicas de TI} \hfill \\
+          \textsf{IFSP - Instituto Federal de Educação, Ciência e Tecnolgia de São Paulo}}}%
+        \vspace{4pt}%
+        {\color{ifspgreen}\rule{\textwidth}{1pt}}%
+      }%
+    }%
+  }%
+  \def\@oddfoot{\hfil\thepage\hfil}
+  \def\@evenhead{\@oddhead}
+  \def\@evenfoot{\@oddfoot}
+}
+\makeatother
+
+% Ativação do estilo
+\pagestyle{fancy}
+
+% ------------ Logo fixo no rodapé (todas as páginas após a capa) ------------
+% [Código inalterado]
+\newcommand{\FooterLogo}{%
+  \AddToShipoutPictureBG{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south east, yshift=0.8cm, xshift=-1.0cm]
+        at (current page.south east)
+        {\includegraphics[height=2.5cm]{assets/img/ifsp_logo_simples.png}};
+    \end{tikzpicture}%
+  }%
+}
+
+% ------------ Capa ------------
+% [Código inalterado]
+\newcommand{\maketitlepage}{%
+  \thispagestyle{empty}%
+  % Fundo da capa (imagem sutil, mas agora menor e centralizada, como marca d'água)
+  \AddToShipoutPictureBG{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[opacity=0.08, inner sep=0pt] at (current page.center)
+        {\includegraphics[width=10cm]{assets/img/ifsp_logo_simples.png}}; % <<--- marca d'água menor na capa também
+    \end{tikzpicture}%
+  }%
+  % Conteúdo textual da capa — centralizado vertical e horizontalmente
+  \vspace{2.5cm} % ajuste fino do topo
+  \begin{center}
+    {\fontsize{18pt}{22pt}\selectfont\bfseries
+    INSTITUTO FEDERAL DE EDUCAÇÃO,\\ CIÊNCIA E TECNOLOGIA DE SÃO PAULO\par}
+    
+    \vspace{0.8cm}
+    
+    {\fontsize{16pt}{19pt}\selectfont\bfseries
+    COORDENADORIA DE CONTRATAÇÕES ESTRATÉGICAS DE TI\par}
+    
+    \vspace{2.2cm}
+    
+    {\fontsize{18pt}{22pt}\selectfont\bfseries
+   Avaliação das práticas de contratação de serviços de computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação \par}
+    
+    \vspace{0.6cm}
+    
+    {\fontsize{15pt}{18pt}\selectfont\itshape
+    IFSP – Reitoria - CCETI-DTI\par}
+    
+    \vfill
+    
+    {\fontsize{14pt}{17pt}\selectfont\bfseries
+    São Paulo — SP, Outubro de 2025\par}
+    
+  \end{center}
+  \clearpage
+}
+
+% ------------ Documento ------------
+\begin{document}
+\maketitlepage
+\FooterLogo
+
+% ================== ITENS DO PROJETO ==================
+
+%------------------------------------------------------
+% RESUMO E ABSTRACT
+%------------------------------------------------------
+\begin{abstract}
+
+\end{abstract}
+
+\begin{abstract}
+
+\textbf{Keywords:} Cloud computing; Public procurement; Law No. 14.133/2021; Ministry of Education.
+\end{abstract}
+
+\onehalfspacing
+
+%------------------------------------------------------
+\section{Introdução}
+
+%------------------------------------------------------
+\section{Fundamentação teórica}
+
+%------------------------------------------------------
+\section{Resultados e discussão}
+
+%------------------------------------------------------
+\section{Análise qualitativa}
+
+
+%------------------------------------------------------
+\section{Conclusões}
+
+%------------------------------------------------------
+\section{Referências}
+\nocite{*}
+\printbibliography
+\end{document}

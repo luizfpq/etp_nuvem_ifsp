@@ -1,0 +1,387 @@
+\documentclass[a4paper, 12pt,brazil]{article}
+
+
+
+% % ===================================================
+% % 1. CONFIGURAÇÃO BÁSICA E IDIOMA
+% % ===================================================
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage[brazil]{babel}
+% \usepackage{csquotes} % Necessário para biblatex
+% \usepackage{indentfirst} % Recuo na primeira linha do parágrafo
+% \usepackage[default,scale=0.95]{opensans} % Fonte OpenSans (confortável)
+% \linespread{1.5} % Espaçamento 1.5
+% \setlength{\parindent}{1.25cm} % Recuo de parágrafo ABNT (1.25cm)
+% \setlength{\parskip}{0pt}
+
+% ===================================================
+% 2. CONFIGURAÇÃO DE PÁGINA E GEOMETRIA
+% ===================================================
+% Margens ABNT: 3cm (superior/esquerda), 2cm (direita/inferior - mas você usou 4.5cm inferior)
+% Mantendo suas margens originais: top=3cm, bottom=4.5cm, left=3cm, right=2cm
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
+\usepackage{setspace} % Necessário para \onehalfspacing no corpo
+\usepackage{fancyhdr} % Para cabeçalho/rodapé personalizado
+
+% Ajuste de headheight (obrigatório para o fancyhdr)
+\setlength{\headheight}{28pt}
+
+% ===================================================
+% 3. REFERÊNCIAS BIBLIOGRÁFICAS (BIBLATEX & Biber)
+%
+% PARA FUNCIONAR:
+% 1. O arquivo referencias.bib deve existir.
+% 2. O Overleaf deve estar configurado para usar o 'Biber' como Ferramenta de Bibliografia.
+% 3. Você deve usar \cite{chave} no texto.
+% 4. A lista é impressa com \printbibliography
+% ===================================================
+% % Usando estilo ABNT-numeric como base (ou adapte para 'authoryear' se preferir)
+% \usepackage[
+%     style=abnt-numeric, % Um estilo ABNT para biblatex. Pode requerer o pacote 'abntex2cite'.
+%     backend=biber,      % Obriga o uso do Biber (crucial para Overleaf/Biblatex)
+%     sorting=none,       % Ordem de aparecimento (padrão ABNT é por ordem de citação)
+%     url=false,          % Opcional: desativa a impressão de URL no final da referência
+% ]{biblatex}
+
+% Tenta carregar o estilo ABNT-numeric. Se não estiver instalado, substitua por:
+% \usepackage[style=numeric, backend=biber]{biblatex}
+% e confie nas configurações do seu template ABNT (se houver um).
+
+% \addbibresource{assets/referencias.bib} % Adicionei a extensão .bib para maior clareza.
+
+% ===================================================
+% 4. PACOTES GRÁFICOS E ESPECIAIS
+% ===================================================
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{eso-pic} % Para posicionar logo e imagem de fundo
+\usepackage{enumitem} % Para melhor controle de listas
+\usepackage{hyperref} % Links e metadados
+
+% ===================================================
+% 5. PACOTES PARA TABELAS E NÚMEROS
+% ===================================================
+\usepackage{booktabs}   % Para \toprule, \midrule, \bottomrule (melhores linhas)
+\usepackage{longtable}  % Para tabelas longas que quebram entre páginas
+\usepackage{ltablex}    % Combina longtable e tabularx (para colunas X com quebra de linha)
+\keepXColumns            % Mantém as larguras das colunas X
+\usepackage{siunitx}    % Para formatar números (S-column)
+
+% Configuração de números ABNT (separador de milhar: '.', decimal: ',')
+\sisetup{
+    group-separator={.},
+    group-minimum-digits=4,
+    output-decimal-marker={,}
+}
+
+% ===================================================
+% 6. CORES, TÍTULOS E ESTILOS PERSONALIZADOS
+% ===================================================
+\definecolor{ifspgreen}{HTML}{2F9E41}
+
+% ------------ Links ------------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=ifspgreen,
+  citecolor=black,
+  pdfauthor={CCETI-DTI — Coordenadoria de Contratações Estratégicas de TI},
+  pdftitle={IFSP - Instituto Federal de Educação, Ciência e Tecnolgia de São Paulo},
+  pdfsubject={Estudo técnico auxiliar: Avaliação das práticas de contratação de serviços de
+computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação},
+  pdfcreator={Overleaf}
+}
+
+% ------------ Cabeçalho / Rodapé (profissional com faixa verde) ------------
+% [Código inalterado para manter seu estilo visual, apenas ajustei a ativação]
+\makeatletter
+\def\ps@fancy{%
+  \def\@oddhead{%
+    \hbox to\textwidth{%
+      \vbox to 26pt{%
+        \vfil
+        \hbox{\parbox{\textwidth}{\vspace{-4pt}\scriptsize
+          \textsf{CCETI-DTI — Coordenadoria de Contratações Estratégicas de TI} \hfill \\
+          \textsf{IFSP - Instituto Federal de Educação, Ciência e Tecnolgia de São Paulo}}}%
+        \vspace{4pt}%
+        {\color{ifspgreen}\rule{\textwidth}{1pt}}%
+      }%
+    }%
+  }%
+  \def\@oddfoot{\hfil\thepage\hfil}
+  \def\@evenhead{\@oddhead}
+  \def\@evenfoot{\@oddfoot}
+}
+\makeatother
+
+% Ativação do estilo
+\pagestyle{fancy}
+
+% ------------ Logo fixo no rodapé (todas as páginas após a capa) ------------
+% [Código inalterado]
+\newcommand{\FooterLogo}{%
+  \AddToShipoutPictureBG{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south east, yshift=0.8cm, xshift=-1.0cm]
+        at (current page.south east)
+        {\includegraphics[height=2.5cm]{assets/img/ifsp_logo_simples.png}};
+    \end{tikzpicture}%
+  }%
+}
+
+% ------------ Capa ------------
+% [Código inalterado]
+\newcommand{\maketitlepage}{%
+  \thispagestyle{empty}%
+  % Fundo da capa (imagem sutil, mas agora menor e centralizada, como marca d'água)
+  \AddToShipoutPictureBG{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[opacity=0.08, inner sep=0pt] at (current page.center)
+        {\includegraphics[width=10cm]{assets/img/ifsp_logo_simples.png}}; % <<--- marca d'água menor na capa também
+    \end{tikzpicture}%
+  }%
+  % Conteúdo textual da capa — centralizado vertical e horizontalmente
+  \vspace{2.5cm} % ajuste fino do topo
+  \begin{center}
+    {\fontsize{18pt}{22pt}\selectfont\bfseries
+    INSTITUTO FEDERAL DE EDUCAÇÃO,\\ CIÊNCIA E TECNOLOGIA DE SÃO PAULO\par}
+    
+    \vspace{0.8cm}
+    
+    {\fontsize{16pt}{19pt}\selectfont\bfseries
+    COORDENADORIA DE CONTRATAÇÕES ESTRATÉGICAS DE TI\par}
+    
+    \vspace{2.2cm}
+    
+    {\fontsize{18pt}{22pt}\selectfont\bfseries
+   Avaliação das práticas de contratação de serviços de computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação \par}
+    
+    \vspace{0.6cm}
+    
+    {\fontsize{15pt}{18pt}\selectfont\itshape
+    IFSP – Reitoria - CCETI-DTI\par}
+    
+    \vfill
+    
+    {\fontsize{14pt}{17pt}\selectfont\bfseries
+    São Paulo — SP, Outubro de 2025\par}
+    
+  \end{center}
+  \clearpage
+}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{pgf-pie}
+
+% ------------ Documento ------------
+\begin{document}
+\maketitlepage
+
+% ================== ITENS DO PROJETO ==================
+
+%------------------------------------------------------
+% RESUMO E ABSTRACT
+%------------------------------------------------------
+\begin{abstract}
+Este artigo tem como objetivo avaliar as práticas de contratação de serviços de computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação (MEC), a partir da análise de dados públicos provenientes das plataformas Compras.gov.br e Contratos.gov.br. A pesquisa, de caráter descritivo e exploratório, adota uma abordagem mista (quantitativa e qualitativa), com base documental e bibliográfica. São apresentados os principais padrões, modalidades e desafios das contratações públicas de serviços de nuvem, à luz da Lei nº 14.133/2021, visando subsidiar estudos técnicos preliminares e promover maior transparência e eficiência nos processos de aquisição. 
+\\[1ex]
+\textbf{Palavras-chave:} Computação em nuvem; Contratações públicas; Lei nº 14.133/2021; Ministério da Educação.
+\end{abstract}
+
+\begin{abstract}
+This paper aims to assess cloud service procurement practices within the federal agencies linked to Brazil’s Ministry of Education (MEC), using open data from the Compras.gov.br and Contratos.gov.br platforms. The research adopts a descriptive and exploratory design, applying mixed methods (quantitative and qualitative) with a documentary and bibliographic basis. The study identifies the main patterns, modalities, and challenges of public cloud procurement under Law No. 14.133/2021, providing insights to support preliminary technical studies and enhance transparency and efficiency in public acquisitions. 
+\\[1ex]
+\textbf{Keywords:} Cloud computing; Public procurement; Law No. 14.133/2021; Ministry of Education.
+\end{abstract}
+
+
+%------------------------------------------------------
+\section{Introdução}
+
+Nas últimas décadas, a computação em nuvem consolidou-se como uma das principais plataformas de suporte à transformação digital no setor público e privado. Essa tecnologia permitiu ampliar a capacidade de processamento e armazenamento de dados, reduzir custos de infraestrutura e aprimorar a escalabilidade dos serviços digitais. No contexto governamental, a adoção de soluções em nuvem tem sido estimulada por políticas de transformação digital, visando modernizar a gestão, aumentar a transparência e aprimorar a eficiência administrativa.
+
+No âmbito da Administração Pública Federal, a demanda por serviços de computação em nuvem passou a ocupar papel estratégico com a criação de estruturas de governança digital e de orientações normativas voltadas à adoção segura e eficiente desses serviços. A Lei nº 14.133/2021, que institui o novo regime jurídico das licitações e contratos administrativos, introduziu instrumentos de planejamento e gestão mais adequados às aquisições de tecnologias emergentes, integrando conceitos como gestão por resultados, análise de riscos e planejamento de contratações. No mesmo sentido, o Decreto nº 10.947/2022 e as Instruções Normativas da Secretaria de Governo Digital detalham critérios técnicos para contratações de soluções de tecnologia da informação e comunicação (TIC), incluindo a computação em nuvem como modalidade preferencial de infraestrutura digital.
+
+Apesar da evolução normativa, a literatura sobre contratações públicas de serviços de nuvem ainda é incipiente, especialmente quanto à forma como as autarquias federais vêm internalizando essas práticas. As contratações de serviços tecnológicos possuem características singulares --- complexidade técnica, dependência de fornecedores especializados, volatilidade de preços e dinamicidade do mercado --- que impõem novos desafios aos gestores públicos. Nesse contexto, compreender as práticas adotadas e a aderência das instituições à legislação vigente torna-se essencial para identificar gargalos, aprimorar os estudos técnicos preliminares e propor melhorias nos processos de contratação.
+
+O presente estudo tem como foco as autarquias federais vinculadas ao Ministério da Educação (MEC), conjunto que abrange instituições com perfis administrativos e tecnológicos heterogêneos, incluindo universidades, institutos federais e fundações. Essas organizações realizam aquisições de serviços de nuvem para hospedar sistemas acadêmicos, portais institucionais, ambientes virtuais de aprendizagem e soluções administrativas. Entretanto, não há ainda uma análise consolidada sobre como essas contratações são conduzidas, quais modalidades são mais utilizadas (licitação, dispensa ou inexigibilidade) e quais resultados práticos são alcançados.
+
+Diante desse cenário, o objetivo deste trabalho é avaliar as práticas de contratação de serviços de computação em nuvem nas autarquias federais vinculadas ao MEC, por meio da análise documental de dados públicos disponibilizados nas plataformas Compras.gov.br\cite{comprasgov} e Contratos.gov.br\cite{contratosgov}. Pretende-se identificar os principais padrões de comportamento, modalidades de contratação, fornecedores recorrentes e níveis de adesão às diretrizes legais que regem as aquisições públicas.
+
+Além disso, busca-se compreender as dificuldades enfrentadas pelos gestores públicos na adoção e manutenção desses contratos, bem como verificar se a dinâmica do mercado de serviços em nuvem influencia as modalidades e resultados das contratações. O estudo também examina as diferenças de maturidade entre as autarquias, considerando fatores como porte institucional, estrutura de TI e centralização das decisões de aquisição.
+
+Do ponto de vista metodológico, a pesquisa utiliza dados oficiais extraídos via API pública, permitindo análise quantitativa e qualitativa das informações contratuais e licitatórias. Essa abordagem contribui para o fortalecimento de metodologias baseadas em evidências, voltadas à análise empírica de políticas públicas. Os resultados esperados incluem a identificação de padrões de contratação, boas práticas e gargalos processuais, que possam subsidiar futuras orientações técnicas, estudos preliminares e políticas de governança digital no âmbito do Ministério da Educação.
+
+Dessa forma, o estudo propõe-se a preencher uma lacuna existente na literatura e na gestão pública brasileira, ao oferecer uma visão consolidada sobre o comportamento das contratações de serviços de computação em nuvem no MEC. Sua relevância reside na possibilidade de contribuir para o aprimoramento das práticas de governança, eficiência administrativa e conformidade normativa, alinhando as contratações de TIC às estratégias de transformação digital do Estado brasileiro.
+
+
+%------------------------------------------------------
+\section{Fundamentação teórica}
+
+A transformação digital da Administração Pública tem promovido mudanças estruturais profundas na forma como os órgãos governamentais planejam, contratam e executam serviços de tecnologia da informação e comunicação (TIC). A migração para soluções em nuvem representa um dos eixos centrais desse processo, pois possibilita maior elasticidade de recursos, redução de custos operacionais, interoperabilidade entre sistemas e acesso remoto seguro. No entanto, a adoção desse modelo requer uma revisão dos instrumentos legais, técnicos e administrativos que regem as contratações públicas, a fim de garantir conformidade, eficiência e segurança.
+
+A literatura especializada destaca que a computação em nuvem é um paradigma de prestação de serviços que envolve a oferta de infraestrutura, plataformas e softwares sob demanda, geralmente classificados nos modelos \textit{Infrastructure as a Service} (IaaS), \textit{Platform as a Service} (PaaS) e \textit{Software as a Service} (SaaS) \cite{mell2011nist}. No contexto do setor público, a adoção dessas modalidades está associada à necessidade de racionalização de recursos e à promoção de uma governança de TIC mais integrada. Entretanto, conforme argumenta Carvalho et al. (2020), a gestão do conhecimento e dos ativos tecnológicos no ambiente público ainda enfrenta desafios de padronização e de maturidade institucional.
+
+Diversos estudos evidenciam que a transição para o modelo de serviços em nuvem exige adaptações normativas e metodológicas, pois os contratos públicos tradicionalmente não foram concebidos para lidar com serviços de natureza contínua, escalável e baseada em consumo \cite{bannister2018digital}. Nesse contexto, as contratações de nuvem demandam novos critérios de especificação técnica, métricas de desempenho, cláusulas de segurança e governança de dados, além de mecanismos de auditoria e monitoramento de SLA (\textit{Service Level Agreement}).
+
+\subsection{Contratações públicas de TIC e computação em nuvem}
+
+As contratações públicas de TIC, especialmente as relacionadas à computação em nuvem, constituem um campo de crescente interesse acadêmico e administrativo. Segundo Nogueira (2021), tais contratações diferem substancialmente das aquisições convencionais de bens e serviços, uma vez que envolvem ativos intangíveis, serviços contínuos e forte dependência tecnológica do fornecedor. A gestão contratual passa a demandar, portanto, uma abordagem baseada em resultados e desempenho, e não apenas na entrega de produtos.
+
+O Tribunal de Contas da União (TCU) tem se manifestado em diversos acórdãos sobre a necessidade de aprimoramento dos instrumentos de planejamento, especialmente os \textit{Estudos Técnicos Preliminares} (ETP) e os \textit{Termos de Referência} (TR), a fim de garantir que a contratação de serviços de nuvem seja antecedida por análises de viabilidade, riscos e custos. O \textit{Acórdão nº 1.503/2020 – Plenário} recomenda que os órgãos públicos adotem metodologias que considerem aspectos como segurança da informação, localização dos dados e conformidade com políticas de proteção de dados pessoais.
+
+\subsection{Marco normativo brasileiro}
+
+O marco normativo que regula as contratações de TIC no Brasil sofreu expressiva modernização nos últimos anos. A promulgação da \textbf{Lei nº 14.133/2021} substituiu o antigo regime licitatório (Leis nº 8.666/1993, nº 10.520/2002 e nº 12.462/2011), introduzindo novos princípios e instrumentos de governança contratual. Essa legislação consolida as etapas de planejamento, seleção do fornecedor, execução e gestão do contrato, além de reforçar a obrigatoriedade de fundamentar as decisões em critérios técnicos e de eficiência administrativa.
+
+O \textbf{Decreto nº 10.947/2022} regulamenta a aplicação da nova lei às contratações de soluções de TIC, estabelecendo diretrizes para o uso racional dos recursos tecnológicos, interoperabilidade, segurança da informação e sustentabilidade. O decreto também consolida o papel da \textbf{Secretaria de Governo Digital (SGD/ME)} como órgão responsável pela coordenação da política de transformação digital e pela definição de orientações técnicas relativas à computação em nuvem, interoperabilidade e infraestrutura de dados.
+
+Além disso, a \textbf{Instrução Normativa SGD/ME nº 1/2019} e documentos complementares (como o \textit{Guia de Contratações de Soluções de TIC}) orientam a elaboração dos artefatos de planejamento — \textit{Estudo Técnico Preliminar}, \textit{Análise de Riscos}, \textit{Termo de Referência} e \textit{Plano de Sustentação} —, destacando a necessidade de alinhamento entre os objetivos institucionais e as soluções tecnológicas contratadas. No caso específico da nuvem, a SGD recomenda a adoção de provedores certificados, com observância aos critérios de disponibilidade, portabilidade e conformidade à Lei Geral de Proteção de Dados Pessoais (LGPD).
+
+\subsection{Princípios de governança digital e modelos de contratação de nuvem}
+
+A \textbf{Estratégia de Governo Digital (EGD 2020–2022)} e sua atualização no \textbf{Decreto nº 10.332/2020} reforçam a visão de que o Estado deve atuar como provedor de serviços digitais integrados, seguros e centrados no cidadão. Nesse contexto, a computação em nuvem é apontada como um dos pilares para a consolidação da infraestrutura de governo digital. A governança digital, segundo a Organização para a Cooperação e Desenvolvimento Econômico (OCDE, 2021), envolve a integração de tecnologias emergentes, interoperabilidade de dados e coordenação interinstitucional para aprimorar a prestação de serviços públicos.
+
+Os modelos de contratação de serviços de nuvem podem assumir diferentes formatos, como o \textit{pay-per-use}, a contratação de instâncias reservadas ou o uso de marketplaces de nuvem. Cada modelo implica riscos e vantagens distintos no contexto público. A literatura internacional sugere que contratos de nuvem pública tendem a reduzir custos de capital, mas podem aumentar a dependência tecnológica de fornecedores globais \cite{armbrust2020}. Já as soluções de nuvem privada ou híbrida oferecem maior controle, porém com custos de implantação mais elevados.
+
+No Brasil, observa-se tendência crescente de adoção de modelos de contratação centralizada, conduzidos por órgãos como a Secretaria de Governo Digital, que negocia acordos corporativos com grandes provedores de nuvem. No entanto, as autarquias e instituições vinculadas ainda mantêm relativa autonomia em suas aquisições, o que gera diversidade de práticas, modelos e níveis de maturidade.
+
+\subsection{Trabalhos correlatos sobre aquisições tecnológicas em órgãos públicos}
+
+Diversos estudos analisam as contratações públicas de TIC sob diferentes perspectivas. Barros (2019) examinou a maturidade da governança de TI em universidades federais brasileiras e concluiu que a falta de integração entre planejamento estratégico e contratações tecnológicas é um dos principais obstáculos à eficiência. Já Santos e Oliveira (2021) investigaram o impacto da nova Lei de Licitações sobre as aquisições de software, destacando que a ausência de metodologias padronizadas de ETP compromete a consistência das decisões de compra.
+
+No campo específico da computação em nuvem, Rocha (2022) identificou que as instituições públicas ainda enfrentam barreiras culturais e jurídicas para migrar seus sistemas para ambientes compartilhados. Entre os principais desafios estão a segurança da informação, a soberania dos dados e a dificuldade de mensuração de desempenho contratual. Em contrapartida, autores como Ruediger (2020) e Pereira (2021) destacam os ganhos de eficiência e transparência proporcionados pela adoção de serviços de nuvem, especialmente quando associada à governança digital e à transformação dos processos administrativos.
+
+\subsection{Quadro comparativo de estudos anteriores}
+
+
+
+\subsection{Lacunas teóricas e justificativa do estudo}
+
+A revisão da literatura e dos marcos normativos permite identificar lacunas significativas no entendimento sobre como as autarquias federais estão operacionalizando a contratação de serviços de computação em nuvem. Poucos estudos combinam análise empírica baseada em dados públicos com avaliação normativa e administrativa. Além disso, há escassez de pesquisas que tratem comparativamente as diferentes modalidades de contratação (licitação, dispensa, inexigibilidade) e seus impactos na eficiência do gasto público.
+
+Assim, este trabalho busca preencher essas lacunas ao adotar uma abordagem analítica e baseada em evidências, utilizando dados extraídos diretamente das APIs oficiais Compras.gov.br e Contratos.gov.br. Ao combinar análise quantitativa e qualitativa, o estudo pretende oferecer uma visão abrangente das práticas de contratação de serviços de nuvem no Ministério da Educação, contribuindo para a literatura sobre governança digital e para a consolidação de metodologias mais consistentes de planejamento e aquisição de soluções tecnológicas na esfera pública.
+
+
+
+%------------------------------------------------------
+\section{Metodologia}
+
+O presente estudo adota uma abordagem aplicada, de caráter descritivo e exploratório, com enfoque misto, integrando métodos quantitativos e qualitativos. O objetivo é avaliar as práticas de contratação de serviços de computação em nuvem nas autarquias federais vinculadas ao Ministério da Educação, à luz das diretrizes da Lei nº 14.133/2021 e dos dados públicos disponíveis em plataformas oficiais de compras e contratos governamentais.
+
+A opção por essa abordagem decorre da necessidade de compreender um fenômeno administrativo e tecnológico em expansão no setor público: a adoção de soluções em nuvem como serviço essencial de infraestrutura digital. A investigação busca não apenas descrever os padrões observados, mas também identificar as dificuldades, tendências e variáveis que influenciam a escolha das modalidades de contratação e a dinâmica do mercado fornecedor.
+
+\subsection{Tipo e natureza da pesquisa}
+
+A pesquisa caracteriza-se como exploratória, pois pretende proporcionar maior familiaridade com o tema, tornando-o mais explícito e compreensível, e também descritiva, na medida em que busca identificar e caracterizar as práticas de contratação de serviços de computação em nuvem.
+
+Trata-se de uma pesquisa documental, baseada na análise de registros e bases oficiais de dados, complementada por uma pesquisa bibliográfica voltada à revisão da literatura sobre contratações públicas, governança digital e adoção de computação em nuvem na Administração Pública Federal.
+
+\subsection{Fontes de dados}
+
+Os dados utilizados serão provenientes de fontes primárias públicas, coletados por meio das APIs REST dos sistemas Compras.gov.br e Contratos.gov.br, mantidos pelo Governo Federal.
+
+A base Compras.gov.br fornecerá informações sobre licitações, modalidades de contratação, itens licitados, atas de registro de preços, órgãos demandantes e fornecedores. Já a base Contratos.gov.br disponibilizará dados referentes à formalização, execução, valores, vigência e situação contratual dos instrumentos firmados.
+
+Além dessas fontes, serão consultados documentos normativos, tais como a Lei nº 14.133/2021, o Decreto nº 10.947/2022, e as Instruções Normativas da Secretaria de Governo Digital, bem como relatórios de auditoria e de acompanhamento de contratações emitidos por órgãos de controle. Todos os dados coletados serão armazenados em formato CSV e JSON, compondo um banco estruturado para posterior tratamento analítico.
+
+\subsection{Procedimentos de coleta e tratamento}
+
+A coleta de dados será conduzida de forma automatizada, utilizando scripts em Python para integração direta com as APIs mencionadas. Cada registro será classificado segundo variáveis previamente definidas: autarquia vinculada ao MEC, modalidade de contratação (licitação, dispensa, inexigibilidade, ata de registro de preços), tipo de serviço contratado (infraestrutura, plataforma, software ou serviço correlato), valores estimados e efetivos, fornecedor, situação contratual e datas de assinatura e encerramento.
+
+Os dados passarão por um processo de limpeza e normalização, com o objetivo de eliminar duplicidades e inconsistências. Em seguida, serão organizados em planilhas e tabelas de análise, permitindo a observação comparativa entre instituições e períodos de contratação.
+
+\subsection{Técnicas de análise}
+
+A análise será desenvolvida em duas dimensões complementares.
+
+Na dimensão quantitativa, serão aplicadas técnicas de estatística descritiva, incluindo medidas de tendência central (média e mediana), dispersão (desvio padrão e coeficiente de variação) e distribuição de frequência, com vistas à identificação de padrões e recorrências nos processos de contratação.
+
+Na dimensão qualitativa, os dados serão interpretados com base na legislação vigente e na literatura especializada em governança pública, a fim de compreender os fatores que influenciam a escolha das modalidades de contratação, os desafios enfrentados pelas autarquias e a fluidez do mercado de serviços de nuvem.
+
+Essa etapa permitirá discutir o grau de maturidade das práticas de contratação em relação aos princípios de economicidade, planejamento e eficiência administrativa previstos na Lei nº 14.133/2021.
+
+\subsection{Limitações da pesquisa}
+
+Reconhece-se que a pesquisa pode ser impactada por limitações decorrentes da inconsistência ou incompletude de registros públicos, bem como da falta de padronização em campos textuais e descrições de objetos nas bases governamentais. Além disso, a análise não abrange a avaliação técnica da performance dos serviços contratados, restringindo-se à dimensão administrativa e documental das práticas de contratação.
+
+\subsection{Resultados esperados}
+
+Espera-se que o estudo proporcione um panorama abrangente das contratações de serviços de computação em nuvem no âmbito do Ministério da Educação, identificando padrões de comportamento entre autarquias, modalidades mais utilizadas, fornecedores recorrentes e volumes financeiros envolvidos.
+
+A partir dos resultados, pretende-se oferecer subsídios para estudos técnicos preliminares e notas técnicas de contratação pública, fortalecendo as práticas de governança digital, transparência e conformidade normativa nas aquisições de soluções em nuvem pela Administração Pública Federal.
+
+
+%------------------------------------------------------
+\section{Análise qualitativa}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lr}
+\hline
+\textbf{Modalidade} & \textbf{Quantidade} \\
+\hline
+Dispensa & 136 \\
+Pregão -- Eletrônico & 49 \\
+Inexigibilidade & 48 \\
+Concorrência -- Eletrônica & 7 \\
+\hline
+\end{tabular}
+\caption{Quantidade de processos por modalidade de licitação}
+\label{tab:licitacoes}
+\end{table}
+
+% \begin{center}
+% \begin{tikzpicture}
+% \pie[
+%     text=legend,
+%     explode={0.1, 0, 0, 0}, % destaca a maior fatia (Dispensa)
+%     radius=2.5,
+%     color={blue!60, orange!60, green!60, red!60}
+% ]{
+%     136/Dispensa,
+%     49/Pregão -- Eletrônico,
+%     48/Inexigibilidade,
+%     7/Concorrência -- Eletrônica
+% }
+% \end{tikzpicture}
+% \end{center}
+
+
+% Explorar o contexto das contratações a partir da interpretação das justificativas e descrições dos objetos contratuais. Discutir:
+% \begin{itemize}
+%   \item Conformidade com a legislação vigente;
+%   \item Critérios de escolha das modalidades;
+%   \item Grau de maturidade digital das autarquias;
+%   \item Fatores que influenciam a fluidez do mercado e a inovação tecnológica.
+% \end{itemize}
+
+%------------------------------------------------------
+\section{Resultados e discussão}
+% Apresentar e interpretar os resultados obtidos:
+% \begin{itemize}
+%   \item Perfil das contratações (frequência, valores, fornecedores);
+%   \item Modalidades predominantes (licitação, dispensa, inexigibilidade);
+%   \item Distribuição temporal e geográfica das contratações;
+%   \item Relação entre tipos de serviços e unidades contratantes;
+%   \item Identificação de padrões, gargalos e boas práticas.
+% \end{itemize}
+% Incluir tabelas e gráficos gerados a partir da análise estatística dos dados extraídos.
+
+
+
+%------------------------------------------------------
+\section{Conclusões}
+% Síntese dos achados e suas implicações para a governança pública e para a eficiência das contratações de serviços de nuvem. Indicação de recomendações práticas e sugestões para estudos futuros, especialmente voltados à mensuração de maturidade em contratações de TIC.
+
+%------------------------------------------------------
+\section{Referências}
+    \nocite{*} % Isso força a inclusão de todas as entradas do arquivo .bib
+    \bibliography{assets/referencias}
+
+
+\end{document}
