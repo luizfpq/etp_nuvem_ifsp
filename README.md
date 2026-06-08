@@ -60,7 +60,7 @@ API REST do PNCP (Portal Nacional de Contratações Públicas), conforme art. 17
 
 ## Autores
 
-- Luiz Fernando Postingel Quirino (UFMS/IFSP) — luiz.quirino@ufms.br
+- Luiz Fernando Postingel Quirino (IFSP/CCETI-DTI) — luiz.quirino@ifsp.edu.br
 
 ## Licença
 
@@ -73,6 +73,6 @@ Código: [MIT](LICENSE) | Dados e artigo: [CC BY 4.0](https://creativecommons.or
   author  = {Quirino, Luiz Fernando Postingel},
   title   = {Panorama das Contratações de Serviços de Computação em Nuvem nas Autarquias Federais do Ministério da Educação},
   year    = {2026},
-  note    = {Repositório: https://github.com/luizfpq/etp_nuvem_ifsp}
+  note    = {CCETI-DTI/IFSP. Repositório: https://github.com/luizfpq/etp_nuvem_ifsp}
 }
 ```
