@@ -116,24 +116,87 @@ Nenhum estudo anterior combina: (i) análise empírica quantitativa com dados do
 
 \subsection{Tipo de pesquisa e fonte de dados}
 
-Pesquisa exploratória e descritiva, com abordagem mista, de base documental. Os dados foram coletados da API REST do PNCP (\texttt{pncp.gov.br/api/consulta/v1}), iterando por 7 modalidades de contratação e janelas mensais (janeiro/2022 a junho/2026), filtrando \textit{client-side} pelos 196 CNPJs vinculados ao MEC.
+Pesquisa exploratória e descritiva, com abordagem mista (quantitativa e qualitativa), de base documental. Os dados foram coletados da API REST pública do Portal Nacional de Contratações Públicas (PNCP), instituído pelo art. 174 da Lei nº 14.133/2021 como plataforma oficial de publicidade dos atos de contratação pública.
 
-\subsection{Classificação e variáveis}
+O endpoint utilizado foi \texttt{GET /contratacoes/publicacao} da base \texttt{pncp.gov.br/api/consulta/v1}, sem necessidade de autenticação. O recorte institucional abrange 196 autarquias vinculadas ao MEC, identificadas pelo CNPJ do órgão vinculado (MEC: 00.394.445/0001-01), obtidas via API de consulta de órgãos do PNCP.
 
-Um processo é classificado como ``nuvem'' quando os campos \texttt{objetoCompra} ou \texttt{informacaoComplementar} contêm ao menos um de 18 termos-chave (\textit{nuvem, cloud, aws, azure, gcp, iaas, paas, saas, hospedagem, microsoft 365}, entre outros). As variáveis analisadas incluem modalidade, amparo legal, ano, UF, valores estimado/homologado, situação, SRP e descrição do objeto.
+\subsection{Protocolo de coleta}
+
+A Figura~\ref{fig:pipeline} apresenta o fluxo metodológico da coleta e análise.
+
+\begin{figure}[ht]
+\centering
+\fbox{\parbox{0.9\textwidth}{\small
+\textbf{Etapa 1 — Coleta:} API PNCP $\rightarrow$ 7 modalidades $\times$ 54 meses (jan/2022 -- jun/2026)\\
+$\downarrow$\\
+\textbf{Etapa 2 — Filtragem:} Client-side por 196 CNPJs MEC $\rightarrow$ 64.295 processos\\
+$\downarrow$\\
+\textbf{Etapa 3 — Classificação:} 18 termos-chave em \texttt{objetoCompra} + \texttt{informacaoComplementar}\\
+$\downarrow$\\
+\textbf{Etapa 4 — Limpeza:} Remoção de outliers ($>$ R\$ 1 bilhão), tratamento de nulos\\
+$\downarrow$\\
+\textbf{Etapa 5 — Análise:} Estatística descritiva, testes não paramétricos, indicadores de fragmentação
+}}
+\caption{Pipeline metodológico: coleta, filtragem, classificação e análise}
+\label{fig:pipeline}
+\end{figure}
+
+Os parâmetros técnicos da coleta são:
+
+\begin{itemize}
+\item \textbf{Modalidades consultadas:} Concorrência Eletrônica (cód. 4), Concorrência Presencial (5), Pregão Eletrônico (6), Pregão Presencial (7), Dispensa (8), Inexigibilidade (9), Credenciamento (12).
+\item \textbf{Paginação:} 50 registros por página (máximo permitido pela API).
+\item \textbf{Janela temporal:} Meses individuais (01/01 a 28-31/mês), para contornar limitação da API que requer intervalo de datas.
+\item \textbf{Delay entre requisições:} 1 segundo (API sem rate limit documentado).
+\item \textbf{Retries:} 3 tentativas com backoff de 5s em caso de erro ou timeout (60s).
+\item \textbf{Filtragem:} Aplicada client-side comparando \texttt{orgaoEntidade.cnpj} com o conjunto de 196 CNPJs do MEC.
+\end{itemize}
+
+O código-fonte completo, dados e instruções de reprodução estão disponíveis em repositório público\footnote{\url{https://github.com/luizfpq/etp_nuvem_ifsp}}, garantindo replicabilidade integral do estudo.
+
+\subsection{Classificação como ``nuvem'' e justificativa dos termos}
+
+Um processo é classificado como relacionado a computação em nuvem quando os campos \texttt{objetoCompra} ou \texttt{informacaoComplementar} contêm ao menos um dos 18 termos-chave listados na Tabela~\ref{tab:termos}, aplicados em busca \textit{case-insensitive}.
+
+\begin{table}[ht]
+\centering
+\caption{Termos-chave para classificação de processos como ``nuvem''}
+\label{tab:termos}
+\begin{tabular}{lll}
+\toprule
+\textbf{Categoria} & \textbf{Termos} & \textbf{Justificativa} \\
+\midrule
+Genéricos & nuvem, cloud & Termos vernaculares diretos \\
+Provedores & aws, azure, gcp, google cloud, oracle cloud & Identificação de provider \\
+Camadas (Portaria 5.950) & iaas, paas, saas & Taxonomia oficial SGD \\
+Serviços & hospedagem, servidor virtual, vps & Infraestrutura virtualizada \\
+Produtos & microsoft 365, office 365 & SaaS amplamente contratado \\
+Específicos & armazenamento em nuvem, backup em nuvem, datacenter virtual & Serviços complementares \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A seleção dos termos foi derivada de: (i) taxonomia da Portaria SGD/MGI nº 5.950/2023 \cite{brasil2023portaria5950}; (ii) análise exploratória de 50 processos de nuvem identificados manualmente no CSV do credenciamento IFSP; e (iii) nomes comerciais dos principais provedores de nuvem pública (AWS, Azure, GCP, Oracle Cloud).
+
+Optou-se por \textbf{não incluir} o termo ``oci'' (Oracle Cloud Infrastructure) por gerar falsos positivos com palavras como ``serviço'', ``ofício'', ``associação'' (substring match). Também não foram incluídos termos excessivamente genéricos como ``TI'', ``infraestrutura'' ou ``serviços de tecnologia'', que gerariam milhares de falsos positivos.
 
 \subsection{Métricas de análise}
 
 \begin{itemize}
-\item \textbf{Índice de economicidade:} $E = (1 - V_h / V_e) \times 100$, onde $V_h$ é o valor homologado e $V_e$ o estimado.
-\item \textbf{Indicador de fragmentação:} Instituições com $\geq$3 dispensas para nuvem no mesmo ano fiscal.
-\item \textbf{Índice de especificidade:} Classificação binária dos objetos em ``específicos'' (mencionam IaaS/PaaS/SaaS/provider) vs. ``genéricos''.
-\item \textbf{Qualidade dos dados:} Proporção de registros sem valor estimado, sem homologação, ou com outliers ($>$R\$ 1 bilhão).
+\item \textbf{Índice de economicidade:} $E = (1 - V_h / V_e) \times 100$, onde $V_h$ é o valor homologado e $V_e$ o estimado. Calculado apenas para pares com $0 < V_h \leq V_e < 10^9$.
+\item \textbf{Indicador de fragmentação:} Instituições com $\geq$3 dispensas para nuvem no mesmo exercício fiscal, conforme alerta do Acórdão TCU 1.503/2020 \cite{tcu2020acordao1503}.
+\item \textbf{Teste de hipótese (QP4):} Mann-Whitney U (bicaudal), para comparar economicidade entre processos com descrição ``específica'' vs. ``genérica'', por se tratar de distribuições assimétricas com medianas iguais a zero.
+\item \textbf{Tratamento de outliers:} Exclusão de valores estimados $>$ R\$ 1 bilhão (1 registro identificado com erro de cadastro de ordem de grandeza).
 \end{itemize}
 
-\subsection{Limitações}
+\subsection{Limitações metodológicas}
 
-A classificação por palavras-chave pode gerar falsos negativos. O PNCP não registra uniformemente processos anteriores a 2023. Dados de fornecedor não estão disponíveis no endpoint de publicação, impossibilitando o cálculo do índice HHI de concentração de mercado. O código e dados são públicos\footnote{\url{https://github.com/luizfpq/etp_nuvem_ifsp}}.
+\begin{enumerate}
+\item \textbf{Classificação por palavras-chave:} Pode gerar falsos negativos (processos de nuvem descritos genericamente como ``serviços de TI'') e eventuais falsos positivos (menção incidental ao termo ``hospedagem'' em contexto não-cloud). Uma validação manual por amostragem é indicada como trabalho futuro.
+\item \textbf{Cobertura temporal:} O PNCP foi instituído em 2021, e a adesão nos anos iniciais (2022--2023) foi parcial, podendo subestimar o volume real de contratações.
+\item \textbf{Ausência de dados de fornecedor:} O endpoint de publicação do PNCP não retorna informações sobre fornecedor vencedor, impossibilitando análises de concentração de mercado (HHI).
+\item \textbf{Granularidade dos dados:} Campos textuais do PNCP (\texttt{objetoCompra}) são livres, sem taxonomia controlada, dificultando classificação automatizada precisa.
+\end{enumerate}
 
 \section{Resultados}
 \label{sec:resultados}
@@ -330,14 +393,33 @@ Este estudo apresentou o primeiro diagnóstico quantitativo das contratações d
 
 \begin{itemize}
 \item \textbf{QP1:} O custo de oportunidade da contratação direta é de 13 pontos percentuais de economicidade perdida (5,3\% vs. 18,3\%), estimado em R\$ 8,4M para o dataset analisado.
-\item \textbf{QP2:} 14 instituições apresentam indícios de fragmentação, com R\$ 11,5M em dispensas reiteradas.
+\item \textbf{QP2:} 14 instituições apresentam indícios de fragmentação, com R\$ 11,5M em dispensas reiteradas para objetos de nuvem no mesmo exercício.
 \item \textbf{QP3:} O PNCP apresenta 12,1\% de registros incompletos e não disponibiliza dados de fornecedor via API, limitando auditoria automatizada.
-\item \textbf{QP4:} A especificidade técnica do TR não influencia significativamente a economicidade --- o fator determinante é a modalidade competitiva.
+\item \textbf{QP4:} A especificidade técnica do TR não influencia significativamente a economicidade (Mann-Whitney $p = 0{,}775$) --- o fator determinante é a modalidade competitiva.
 \end{itemize}
 
-\textbf{Implicações práticas:} (i) consolidação de demandas via SRP reduziria custos e fragmentação; (ii) validação de dados na entrada do PNCP melhoraria auditabilidade; (iii) inclusão de dados de fornecedor na API permitiria análises de concentração de mercado.
+Adicionalmente, a confrontação com a Portaria SGD/MGI nº 5.950/2023 revelou que 79,3\% dos processos não classificam o serviço nas camadas IaaS/PaaS/SaaS exigidas pela norma, e apenas 9,9\% utilizam SRP, indicando baixa aderência ao modelo institucionalizado.
 
-\textbf{Trabalhos futuros:} (i) extensão para outros ministérios; (ii) coleta de dados de fornecedores via endpoint de resultados para cálculo do HHI; (iii) análise textual de TRs com NLP para classificação automática de especificidade; (iv) estudo longitudinal após maturação completa do PNCP.
+\subsection{Implicações práticas}
+
+Os achados deste estudo subsidiam diretamente a prática de gestores de TI e órgãos de controle:
+
+\begin{enumerate}
+\item \textbf{Para gestores de TI:} A consolidação de demandas via SRP pode gerar economia de até 18,3\% sobre os valores estimados. Recomenda-se que as autarquias do MEC avaliem a adesão a atas de RP existentes antes de iniciar contratações individuais.
+\item \textbf{Para a SGD/MGI:} A baixa aderência à Portaria 5.950/2023 (79,3\% dos objetos sem classificação IaaS/PaaS/SaaS) sugere necessidade de capacitação e disponibilização de modelos padronizados de TR para nuvem.
+\item \textbf{Para o PNCP:} A inclusão de campos estruturados (tipo de serviço, fornecedor, modelo de remuneração) e validação de valores na entrada melhorariam significativamente a auditabilidade.
+\item \textbf{Para órgãos de controle (TCU/CGU):} O indicador de fragmentação aqui proposto (3+ dispensas/ano/instituição) pode ser automatizado como alerta em dashboards de monitoramento contínuo.
+\end{enumerate}
+
+\subsection{Trabalhos futuros}
+
+\begin{enumerate}
+\item Extensão do recorte para todos os ministérios, permitindo análise comparativa entre setores.
+\item Coleta de dados de fornecedores via endpoint de resultados do PNCP, viabilizando cálculo do índice HHI de concentração de mercado.
+\item Análise textual dos Termos de Referência completos (não apenas campos do PNCP) com técnicas de NLP para classificação automática por camada e verificação de conformidade com a Portaria 5.950/2023.
+\item Estudo longitudinal após maturação completa do PNCP (previsão: 2027), quando a cobertura temporal será mais homogênea.
+\item Desenvolvimento de dashboard automatizado de monitoramento de contratações de nuvem, integrando os indicadores deste estudo.
+\end{enumerate}
 
 \bibliographystyle{plain}
 \bibliography{references}
