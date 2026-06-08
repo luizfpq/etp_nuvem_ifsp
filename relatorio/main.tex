@@ -53,13 +53,63 @@ Para tanto, utilizamos dados extraídos da API pública do PNCP (art. 174, Lei 1
 \section{Trabalhos Relacionados}
 \label{sec:relacionados}
 
-Barros (2019) examinou a maturidade da governança de TI em universidades federais, evidenciando que a desintegração entre planejamento estratégico e contratações compromete a eficiência \cite{barros2019governanca}. Nogueira (2021) investigou o impacto da Lei 14.133/2021 sobre aquisições de software, destacando a carência de metodologias padronizadas de ETP \cite{nogueira2021contratacoes}. Rocha (2022) identificou barreiras culturais e jurídicas para migração a ambientes de nuvem compartilhados \cite{rocha2022nuvem}.
+\subsection{Computação em nuvem no setor público}
 
-No plano internacional, Armbrust et al. (2020) analisaram a evolução do paradigma de nuvem, indicando que contratos de nuvem pública reduzem custos de capital mas ampliam dependência tecnológica \cite{armbrust2020}. A OCDE (2021) reforça a importância da coordenação interinstitucional na governança digital \cite{oecd2021digitalgov}. Gonçalves, Santos e Quirino (2026) demonstraram a viabilidade de análises de irregularidades em contratações com \textit{machine learning} e dados abertos \cite{goncalves2026}.
+A computação em nuvem, definida pelo NIST como modelo de oferta de recursos computacionais sob demanda via rede \cite{mell2011nist}, transformou a gestão de infraestrutura digital no setor público. Armbrust et al. \cite{armbrust2010above} identificaram, já em 2010, que a elasticidade e o modelo \textit{pay-per-use} da nuvem ofereciam vantagens significativas para organizações com demanda variável --- perfil típico de instituições de ensino com picos em períodos letivos.
 
-O TCU, no Acórdão 1.503/2020, recomenda que órgãos avaliem contratações conjuntas e registros de preços para serviços de nuvem, alertando para riscos de fragmentação de despesas e aprisionamento tecnológico \cite{tcu2020acordao1503}.
+Revisões sistemáticas recentes confirmam a expansão da adoção governamental. Hashemi e Zarei \cite{hashemi2024cloud_security}, em revisão PRISMA com 758 artigos triados e 33 incluídos, identificaram segurança da informação e privacidade como fatores críticos, respondendo por 70\% das barreiras à adoção. Pinheiro \cite{pinheiro2020cloudgov} mapeou o campo \textit{CloudGov}, evidenciando que a literatura concentra-se em fatores de adoção, com escassa atenção à dimensão contratual e econômica. Alreemy et al. \cite{alreemy2025cloud_egovernment} analisaram tendências de suporte governamental ao \textit{cloud} em arquiteturas de governo eletrônico, destacando regulação e padrões de segurança como habilitadores.
 
-O diferencial deste estudo reside na análise empírica quantitativa focada em nuvem, com recorte institucional MEC e utilização da API do PNCP --- abordagem não encontrada nos trabalhos anteriores.
+No contexto europeu, Cheng et al. \cite{cheng2017uk_cloud} estudaram três organizações públicas britânicas que migraram para nuvem, identificando benefícios em flexibilidade e gestão da informação, mas também riscos de perda de controle e dependência de fornecedores (\textit{vendor lock-in}). Esse risco é central no debate sobre soberania digital: Adler-Nissen et al. \cite{adlernissen2024gaiax} demonstraram que o projeto europeu GAIA-X articula ao menos seis concepções distintas de soberania digital, refletindo tensões entre segurança, economia e direitos fundamentais.
+
+\subsection{Contratações de TIC sob a Lei 14.133/2021}
+
+No Brasil, a Lei nº 14.133/2021 \cite{brasil2021lei14133} modernizou o regime de licitações, introduzindo Estudo Técnico Preliminar, gestão por resultados e análise de riscos. A Instrução Normativa SGD/ME nº 94/2022 \cite{brasil2022in94} detalha o processo de contratação de soluções de TIC, enquanto a Portaria SGD/MGI nº 5.950/2023 \cite{brasil2023portaria5950} estabelece especificamente o modelo de contratação de serviços de computação em nuvem, definindo modalidades de remuneração (créditos universais, subscrição, \textit{pay-per-use}), exigências de classificação por camada (IaaS, PaaS, SaaS) e planilha de composição de custos.
+
+Nogueira \cite{nogueira2021contratacoes} investigou o impacto da nova lei sobre aquisições de software, evidenciando que a carência de metodologias padronizadas de ETP compromete a consistência das decisões. Barros \cite{barros2019governanca} examinou a maturidade da governança de TI em universidades federais, concluindo que a desintegração entre planejamento estratégico e contratações é obstáculo central. Rocha \cite{rocha2022nuvem} identificou barreiras culturais e jurídicas para migração a ambientes compartilhados, incluindo temores sobre segurança e soberania dos dados.
+
+O TCU tem se manifestado sobre contratações de nuvem: o Acórdão 1.503/2020 \cite{tcu2020acordao1503} recomenda adoção de SRP e contratações conjuntas, alertando para riscos de fragmentação. O Acórdão 2.569/2019 \cite{tcu2019acordao2569} avaliou a governança de TI na APF, identificando lacunas na capacidade de gestão contratual.
+
+\subsection{Governança digital e experiência internacional}
+
+A OCDE \cite{oecd2021digitalgov} reforça que governança digital eficaz requer integração de tecnologias emergentes, coordenação interinstitucional e capacitação da força de trabalho. No âmbito do \textit{procurement} de nuvem, experiências internacionais oferecem comparativos relevantes.
+
+Nos Estados Unidos, a estratégia \textit{Cloud Smart} (evolução do \textit{Cloud First} de 2010) enfatiza três pilares: \textit{procurement} inteligente, segurança integrada e desenvolvimento da força de trabalho. O programa FedRAMP padroniza a certificação de provedores de nuvem para uso federal \cite{itif2020fedramp}. O GAO \cite{gao2024cloud} identificou que, em 2024, todas as 24 agências federais haviam estabelecido diretrizes de governança para nuvem, mas persistiam lacunas na implementação dos requisitos de \textit{procurement} do OMB.
+
+Na Suécia, Lund et al. \cite{sweden_cloud2022} realizaram estudo exploratório sobre \textit{procurement} de nuvem no setor público, identificando desafios de segurança da informação na aquisição de serviços \textit{cloud}. A OCDE \cite{oecd2025procurement}, em seu relatório \textit{Government at a Glance 2025}, apresenta métricas de eficiência em \textit{procurement} público que permitem benchmarking internacional.
+
+\subsection{Auditoria e dados abertos em compras públicas}
+
+A utilização de dados abertos para monitoramento de contratações tem crescido. No Brasil, a Rede de Padronização de Dados Abertos publicou padrão específico para compras e contratações públicas \cite{rac2024dados_abertos}, destacando a importância da qualidade dos dados para viabilizar auditoria automatizada.
+
+Baldi e Vannoni \cite{baldi2018econometric}, analisando contratações de serviços das Forças Armadas espanholas, forneceram evidência econométrica robusta sobre a extensão e fontes de economia em contratos competitivos --- resultado diretamente comparável aos nossos achados de economicidade. Decarolis et al. \cite{decarolis2023bureaucratic} demonstraram que a competência burocrática dos gestores causa redução significativa em atrasos, estouros de custos e renegociações, sugerindo que a capacidade institucional é fator determinante na qualidade das contratações.
+
+Gonçalves, Santos e Quirino \cite{goncalves2026deteccao} aplicaram técnicas de \textit{machine learning} para detecção de irregularidades em contratações públicas brasileiras com dados abertos, demonstrando a viabilidade de análises automatizadas no domínio.
+
+\subsection{Posicionamento e lacunas}
+
+A Tabela~\ref{tab:comparativo} sintetiza o posicionamento deste estudo em relação aos trabalhos anteriores.
+
+\begin{table}[ht]
+\centering
+\caption{Quadro comparativo de trabalhos relacionados}
+\label{tab:comparativo}
+\begin{tabular}{p{2.5cm}p{2cm}p{2cm}p{3cm}p{2.5cm}}
+\toprule
+\textbf{Estudo} & \textbf{Método} & \textbf{Recorte} & \textbf{Achados} & \textbf{Lacuna} \\
+\midrule
+Hashemi (2024) & PRISMA SLR & Global & Segurança = 70\% barreiras & Não trata custos \\
+Pinheiro (2020) & SLR & Global & Campo CloudGov mapeado & Sem dados empíricos \\
+Cheng (2017) & Caso UK & 3 orgs & Lock-in, flexibilidade & Sem análise financeira \\
+Nogueira (2021) & Documental & Brasil & ETP deficiente & Sem recorte nuvem \\
+Baldi (2018) & Econometria & Espanha & Economia em competição & Não é TI/nuvem \\
+GAO (2024) & Auditoria & EUA & 24 agências, baixa aderência & Contexto regulatório diferente \\
+\midrule
+\textbf{Este estudo} & \textbf{Emp./API} & \textbf{MEC/BR} & \textbf{QP1--QP4} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Nenhum estudo anterior combina: (i) análise empírica quantitativa com dados do PNCP; (ii) foco específico em contratações de nuvem; (iii) recorte institucional das autarquias do MEC; e (iv) confrontação com o modelo normativo da Portaria SGD/MGI 5.950/2023.
 
 \section{Metodologia}
 \label{sec:metodologia}
@@ -233,6 +283,21 @@ O uso marginal de SRP (9,9\%) confirma a oportunidade perdida de consolidação 
 \subsection{Ameaças à validade}
 
 \textbf{Interna:} a classificação por palavras-chave pode gerar falsos negativos (descrições genéricas como ``serviços de TI'') e falsos positivos (menção incidental). \textbf{Externa:} resultados específicos ao recorte MEC --- outros ministérios podem apresentar padrões distintos. \textbf{Construto:} o PNCP foi instituído em 2021, e a adesão nos primeiros anos foi parcial.
+
+\subsection{Aderência à Portaria SGD/MGI nº 5.950/2023}
+
+A Portaria 5.950/2023 \cite{brasil2023portaria5950} estabelece que contratações de nuvem no SISP devem: (i) classificar explicitamente o serviço em IaaS, PaaS ou SaaS; (ii) adotar modelos de remuneração padronizados (créditos universais, subscrição ou \textit{pay-per-use}); (iii) apresentar planilha de composição de custos; e (iv) avaliar uso de SRP como instrumento preferencial.
+
+Confrontando essas exigências com os dados empíricos:
+
+\begin{itemize}
+\item \textbf{Classificação por camada:} Apenas 20,7\% dos processos (65/314) mencionam explicitamente IaaS, PaaS, SaaS ou nome de provedor --- os demais 79,3\% utilizam descrições genéricas (``nuvem'', ``hospedagem'', ``cloud''), incompatíveis com a taxonomia exigida pela Portaria.
+\item \textbf{Modelo de remuneração:} Não foi possível identificar nos campos \texttt{objetoCompra} referências a ``créditos universais'' ou ``subscrição'' de forma sistemática. A granularidade dos dados do PNCP não permite verificar a existência das planilhas de custo.
+\item \textbf{Uso de SRP:} Apenas 9,9\% dos processos utilizam SRP, contra a recomendação da Portaria de priorização desse instrumento.
+\item \textbf{Temporalidade:} A Portaria é de outubro/2023. Dos 156 processos de 2024, esperar-se-ia maior aderência ao modelo --- contudo, a predominância de descrições genéricas persiste.
+\end{itemize}
+
+Esses indícios sugerem baixa aderência ao modelo da Portaria 5.950/2023 nas autarquias do MEC, o que pode se dever a: (i) desconhecimento da norma; (ii) dificuldade técnica na classificação; ou (iii) limitação dos campos do PNCP para registrar tais informações. Recomenda-se que futuros estudos avaliem os Termos de Referência completos (não apenas os campos do PNCP) para verificação mais precisa da conformidade.
 
 \section{Conclusão}
 \label{sec:conclusao}
