@@ -29,195 +29,228 @@
 \maketitle
 
 \begin{abstract}
-This paper presents an exploratory analysis of cloud computing service procurement practices across federal agencies linked to Brazil's Ministry of Education (MEC). Using public data from the National Public Procurement Portal (PNCP) API, we identify procurement patterns, modality distribution, supplier concentration, and compliance with Law No. 14.133/2021. The dataset comprises 314 cloud-related procurement processes from 88 institutions between 2022 and 2026, out of a total of 64,295 processes analyzed. Results reveal a predominance of direct contracting (61.5\% via waivers), significant growth in cloud adoption (from 16 processes in 2022 to 156 in 2024), and a global cost savings rate of 30.7\%. The analysis provides empirical evidence to support preliminary technical studies and contributes to the literature on digital governance in Brazilian public administration.
+This paper presents an exploratory analysis of cloud computing service procurement practices across 196 federal agencies linked to Brazil's Ministry of Education (MEC). Using public data from the National Public Procurement Portal (PNCP) API, we analyzed 64,295 procurement processes (2022--2026), identifying 314 cloud-related processes from 88 institutions. Results reveal a predominance of direct contracting (61.5\%), with competitive bidding yielding 3.5$\times$ greater cost savings (18.3\% vs. 5.3\%). We identify 14 institutions with potential expenditure fragmentation patterns (R\$ 11.5M under scrutiny) and significant data quality issues in the PNCP (12.1\% missing homologation values). The analysis provides empirical evidence for preliminary technical studies and contributes to digital governance literature.
 \end{abstract}
 
 \begin{resumo}
-Este artigo apresenta uma análise exploratória das práticas de contratação de serviços de computação em nuvem pelas autarquias federais vinculadas ao Ministério da Educação (MEC). Utilizando dados públicos da API do Portal Nacional de Contratações Públicas (PNCP), identificamos padrões de contratação, distribuição por modalidade, concentração de fornecedores e aderência à Lei nº 14.133/2021. O dataset compreende 314 processos de contratação de nuvem de 88 instituições entre 2022 e 2026, extraídos de um universo de 64.295 processos. Os resultados revelam predominância de contratação direta (61,5\% via dispensa), crescimento expressivo da adoção de nuvem (de 16 processos em 2022 para 156 em 2024) e economicidade global de 30,7\%. A análise fornece evidências empíricas para subsidiar estudos técnicos preliminares e contribui para a literatura sobre governança digital na administração pública brasileira.
+Este artigo apresenta uma análise exploratória das práticas de contratação de serviços de computação em nuvem pelas 196 autarquias federais vinculadas ao Ministério da Educação (MEC). Utilizando dados da API do Portal Nacional de Contratações Públicas (PNCP), analisamos 64.295 processos (2022--2026), identificando 314 relacionados a nuvem em 88 instituições. Os resultados revelam predominância de contratação direta (61,5\%), com licitações competitivas gerando economia 3,5$\times$ superior (18,3\% vs. 5,3\%). Identificamos 14 instituições com indícios de fragmentação de despesas (R\$ 11,5 milhões sob escrutínio) e problemas significativos de qualidade dos dados no PNCP (12,1\% sem valor de homologação). A análise fornece evidências empíricas para estudos técnicos preliminares e contribui para a literatura sobre governança digital.
 \end{resumo}
 
 \section{Introdução}
 \label{sec:intro}
 
-A computação em nuvem consolidou-se como plataforma central de suporte à transformação digital no setor público, permitindo ampliar a capacidade de processamento, reduzir custos de infraestrutura e aprimorar a escalabilidade dos serviços digitais \cite{mell2011nist}. No contexto governamental brasileiro, a adoção de soluções em nuvem tem sido estimulada por políticas de governo digital e por orientações normativas voltadas à modernização administrativa.
+A computação em nuvem consolidou-se como plataforma central de suporte à transformação digital no setor público, permitindo ampliar capacidade de processamento, reduzir custos de infraestrutura e aprimorar escalabilidade \cite{mell2011nist}. No contexto governamental brasileiro, a Lei nº 14.133/2021 introduziu instrumentos de planejamento adequados a tecnologias emergentes, integrando gestão por resultados e análise de riscos \cite{brasil2021lei14133}. O Decreto nº 10.947/2022 e as Instruções Normativas da SGD detalham critérios para contratações de TIC, incluindo nuvem como modalidade preferencial.
 
-A Lei nº 14.133/2021 introduziu instrumentos de planejamento mais adequados às aquisições de tecnologias emergentes, integrando conceitos como gestão por resultados e análise de riscos. O Decreto nº 10.947/2022 e as Instruções Normativas da Secretaria de Governo Digital detalham critérios técnicos para contratações de TIC, incluindo a computação em nuvem como modalidade preferencial de infraestrutura \cite{brasil2021lei14133}.
+Apesar da evolução normativa, não existe um panorama empírico consolidado sobre como as autarquias do MEC --- universidades federais, institutos federais e fundações --- estão operacionalizando essas contratações. Este estudo busca responder às seguintes questões de pesquisa:
 
-Apesar da evolução normativa, a literatura sobre contratações públicas de serviços de nuvem ainda é incipiente, especialmente quanto à forma como as autarquias federais vêm internalizando essas práticas. O presente estudo foca nas autarquias vinculadas ao Ministério da Educação (MEC) --- universidades federais, institutos federais e fundações --- que realizam aquisições para hospedar sistemas acadêmicos, portais institucionais e ambientes virtuais de aprendizagem.
+\begin{itemize}
+\item \textbf{QP1:} Qual o custo de oportunidade da contratação direta em comparação com certames competitivos?
+\item \textbf{QP2:} Existem indícios de fragmentação indevida de despesas nas dispensas de licitação?
+\item \textbf{QP3:} Qual a qualidade dos dados registrados no PNCP para fins de auditoria e transparência?
+\item \textbf{QP4:} A especificidade técnica dos Termos de Referência influencia a economicidade obtida?
+\end{itemize}
 
-O objetivo deste trabalho é apresentar um panorama empírico das contratações de serviços de computação em nuvem nessas instituições, identificando padrões de modalidade, evolução temporal, distribuição geográfica e conformidade normativa. Para tanto, utilizamos dados extraídos diretamente da API pública do Portal Nacional de Contratações Públicas (PNCP), conforme previsto no art. 174 da Lei nº 14.133/2021.
-
-As contribuições deste trabalho são: (i) o primeiro levantamento empírico das contratações de nuvem no âmbito do MEC com dados do PNCP; (ii) a identificação de padrões de contratação e gargalos processuais; e (iii) a disponibilização de metodologia reprodutível, com código e dados públicos.
+Para tanto, utilizamos dados extraídos da API pública do PNCP (art. 174, Lei 14.133/2021), analisando 64.295 processos de 196 autarquias entre 2022 e 2026. As contribuições são: (i) primeiro diagnóstico empírico das contratações de nuvem no MEC; (ii) quantificação do diferencial de economicidade entre modalidades; (iii) identificação de padrões de fragmentação; e (iv) avaliação da qualidade dos dados do PNCP como instrumento de transparência.
 
 \section{Trabalhos Relacionados}
 \label{sec:relacionados}
 
-Barros (2019) examinou a maturidade da governança de TI em universidades federais, concluindo que a falta de integração entre planejamento estratégico e contratações tecnológicas é obstáculo central à eficiência \cite{barros2019governanca}. Nogueira (2021) investigou o impacto da Lei nº 14.133/2021 sobre aquisições de software, destacando que a ausência de metodologias padronizadas de Estudo Técnico Preliminar compromete a consistência das decisões de compra \cite{nogueira2021contratacoes}.
+Barros (2019) examinou a maturidade da governança de TI em universidades federais, evidenciando que a desintegração entre planejamento estratégico e contratações compromete a eficiência \cite{barros2019governanca}. Nogueira (2021) investigou o impacto da Lei 14.133/2021 sobre aquisições de software, destacando a carência de metodologias padronizadas de ETP \cite{nogueira2021contratacoes}. Rocha (2022) identificou barreiras culturais e jurídicas para migração a ambientes de nuvem compartilhados \cite{rocha2022nuvem}.
 
-No campo da computação em nuvem, Rocha (2022) identificou barreiras culturais e jurídicas para migração de sistemas públicos a ambientes compartilhados, com destaque para segurança da informação e soberania dos dados \cite{rocha2022nuvem}. A OCDE (2021) reforça que a governança digital envolve integração de tecnologias emergentes e coordenação interinstitucional \cite{oecd2021digitalgov}.
+No plano internacional, Armbrust et al. (2020) analisaram a evolução do paradigma de nuvem, indicando que contratos de nuvem pública reduzem custos de capital mas ampliam dependência tecnológica \cite{armbrust2020}. A OCDE (2021) reforça a importância da coordenação interinstitucional na governança digital \cite{oecd2021digitalgov}. Gonçalves, Santos e Quirino (2026) demonstraram a viabilidade de análises de irregularidades em contratações com \textit{machine learning} e dados abertos \cite{goncalves2026}.
 
-Internacionalmente, Armbrust et al. (2020) analisaram a evolução do paradigma de nuvem, indicando que contratos de nuvem pública reduzem custos de capital, mas podem aumentar a dependência tecnológica \cite{armbrust2020}. No Brasil, Gonçalves, Santos e Quirino (2026) aplicaram técnicas de \textit{machine learning} para detecção de irregularidades em contratações públicas, demonstrando a viabilidade de análises baseadas em dados abertos \cite{goncalves2026}.
+O TCU, no Acórdão 1.503/2020, recomenda que órgãos avaliem contratações conjuntas e registros de preços para serviços de nuvem, alertando para riscos de fragmentação de despesas e aprisionamento tecnológico \cite{tcu2020acordao1503}.
 
-O diferencial deste estudo reside no foco específico em contratações de nuvem, no recorte institucional (autarquias MEC) e na utilização da API do PNCP como fonte primária --- abordagem não encontrada nos trabalhos anteriores.
+O diferencial deste estudo reside na análise empírica quantitativa focada em nuvem, com recorte institucional MEC e utilização da API do PNCP --- abordagem não encontrada nos trabalhos anteriores.
 
 \section{Metodologia}
 \label{sec:metodologia}
 
-\subsection{Tipo e natureza da pesquisa}
+\subsection{Tipo de pesquisa e fonte de dados}
 
-A pesquisa é exploratória e descritiva, com abordagem mista (quantitativa e qualitativa), de base documental. Utiliza dados primários públicos extraídos via API REST do PNCP.
+Pesquisa exploratória e descritiva, com abordagem mista, de base documental. Os dados foram coletados da API REST do PNCP (\texttt{pncp.gov.br/api/consulta/v1}), iterando por 7 modalidades de contratação e janelas mensais (janeiro/2022 a junho/2026), filtrando \textit{client-side} pelos 196 CNPJs vinculados ao MEC.
 
-\subsection{Fonte de dados e protocolo de coleta}
+\subsection{Classificação e variáveis}
 
-Os dados foram coletados da API pública do PNCP (\texttt{pncp.gov.br/api/consulta/v1}), endpoint \texttt{GET /contratacoes/publicacao}. O recorte institucional abrange 196 autarquias vinculadas ao MEC, identificadas pelo CNPJ do órgão vinculado (MEC: 00.394.445/0001-01).
+Um processo é classificado como ``nuvem'' quando os campos \texttt{objetoCompra} ou \texttt{informacaoComplementar} contêm ao menos um de 18 termos-chave (\textit{nuvem, cloud, aws, azure, gcp, iaas, paas, saas, hospedagem, microsoft 365}, entre outros). As variáveis analisadas incluem modalidade, amparo legal, ano, UF, valores estimado/homologado, situação, SRP e descrição do objeto.
 
-O script de coleta, desenvolvido em Python, itera por combinações de modalidade de contratação (Dispensa, Pregão Eletrônico, Inexigibilidade, Concorrência Eletrônica e Credenciamento) e janelas temporais mensais (janeiro/2022 a junho/2026). Para cada combinação, os registros são filtrados \textit{client-side} pelo CNPJ das autarquias do MEC.
+\subsection{Métricas de análise}
 
-\subsection{Classificação como ``nuvem''}
-
-Um processo é classificado como relacionado a computação em nuvem quando os campos \texttt{objetoCompra} ou \texttt{informacaoComplementar} contêm ao menos um dos seguintes termos (busca \textit{case-insensitive}): \textit{nuvem, cloud, aws, azure, gcp, google cloud, iaas, paas, saas, hospedagem, datacenter virtual, microsoft 365, office 365, oracle cloud, servidor virtual, vps, armazenamento em nuvem, backup em nuvem}.
-
-\subsection{Variáveis de análise}
-
-As variáveis analisadas incluem: modalidade de contratação, amparo legal, ano da compra, UF da unidade gestora, valores estimado e homologado, situação do processo, utilização de SRP e descrição do objeto.
+\begin{itemize}
+\item \textbf{Índice de economicidade:} $E = (1 - V_h / V_e) \times 100$, onde $V_h$ é o valor homologado e $V_e$ o estimado.
+\item \textbf{Indicador de fragmentação:} Instituições com $\geq$3 dispensas para nuvem no mesmo ano fiscal.
+\item \textbf{Índice de especificidade:} Classificação binária dos objetos em ``específicos'' (mencionam IaaS/PaaS/SaaS/provider) vs. ``genéricos''.
+\item \textbf{Qualidade dos dados:} Proporção de registros sem valor estimado, sem homologação, ou com outliers ($>$R\$ 1 bilhão).
+\end{itemize}
 
 \subsection{Limitações}
 
-A pesquisa pode ser impactada por: (i) inconsistência nos registros do PNCP; (ii) limitação da classificação por palavras-chave (possíveis falsos negativos em descrições genéricas); (iii) ausência de dados anteriores a 2022 no PNCP; (iv) processos publicados após a data de coleta não foram capturados.
-
-O código-fonte, os dados e as instruções de reprodução estão disponíveis publicamente\footnote{\url{https://github.com/luizfpq/etp_nuvem_ifsp}}.
+A classificação por palavras-chave pode gerar falsos negativos. O PNCP não registra uniformemente processos anteriores a 2023. Dados de fornecedor não estão disponíveis no endpoint de publicação, impossibilitando o cálculo do índice HHI de concentração de mercado. O código e dados são públicos\footnote{\url{https://github.com/luizfpq/etp_nuvem_ifsp}}.
 
 \section{Resultados}
 \label{sec:resultados}
 
-\subsection{Visão geral}
+Do universo de 64.295 processos das 196 autarquias do MEC, foram identificados 314 relacionados a nuvem (0,49\%), provenientes de 88 instituições (44,9\%). A Tabela~\ref{tab:visao} resume o panorama.
 
-Do universo de 64.295 processos de contratação publicados pelas 196 autarquias do MEC no PNCP entre 2022 e 2026, foram identificados 314 processos relacionados a computação em nuvem (0,49\%), provenientes de 88 instituições distintas (44,9\% do total de autarquias). Isso indica que mais da metade das autarquias do MEC não realizou nenhuma contratação de nuvem via PNCP no período analisado.
+\begin{table}[ht]
+\centering
+\caption{Panorama geral do dataset}
+\label{tab:visao}
+\begin{tabular}{lr}
+\toprule
+\textbf{Indicador} & \textbf{Valor} \\
+\midrule
+Total de processos MEC (2022--2026) & \num{64295} \\
+Processos de nuvem & 314 (0,49\%) \\
+Instituições com ao menos 1 contratação & 88 de 196 (44,9\%) \\
+Valor total homologado (nuvem) & R\$ \num{137612572} \\
+Economicidade global & 30,7\% \\
+Mediana valor homologado & R\$ \num{25944} \\
+Processos com SRP & 31 (9,9\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Evolução temporal}
 
-A Tabela~\ref{tab:evolucao} apresenta a evolução anual das contratações. Observa-se crescimento de 875\% entre 2022 e 2024, com estabilização em 2025 (dados parciais do ano) e projeção de continuidade em 2026.
+A Tabela~\ref{tab:evolucao} evidencia crescimento de 875\% entre 2022 e 2024, com valores homologados em crescente (de R\$ 3,9M para R\$ 51M em 2025, ano parcial).
 
 \begin{table}[ht]
 \centering
-\caption{Evolução temporal das contratações de nuvem (MEC, 2022--2026)}
+\caption{Evolução temporal das contratações de nuvem}
 \label{tab:evolucao}
-\begin{tabular}{lrr}
-\toprule
-\textbf{Ano} & \textbf{Processos} & \textbf{Valor homologado (R\$)} \\
-\midrule
-2022 & 16 & \num{3958963.89} \\
-2023 & 69 & \num{31578499.28} \\
-2024 & 156 & \num{50070710.40} \\
-2025 & 71 & \num{51013780.57} \\
-2026 & 2 & \num{990618.60} \\
-\midrule
-\textbf{Total} & \textbf{314} & \textbf{\num{137612572.74}} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Distribuição por modalidade}
-
-A Tabela~\ref{tab:modalidades} apresenta a distribuição por modalidade de contratação. A Dispensa de Licitação predomina com 61,5\% dos processos, seguida pelo Pregão Eletrônico (22,9\%) e pela Inexigibilidade (13,4\%).
-
-\begin{table}[ht]
-\centering
-\caption{Distribuição por modalidade de contratação}
-\label{tab:modalidades}
 \begin{tabular}{lrrr}
 \toprule
-\textbf{Modalidade} & \textbf{Qtd} & \textbf{\%} & \textbf{Valor homologado (R\$)} \\
+\textbf{Ano} & \textbf{Processos} & \textbf{Valor homologado (R\$)} & \textbf{Instituições} \\
 \midrule
-Dispensa & 193 & 61,5 & \num{64728837.58} \\
-Pregão Eletrônico & 72 & 22,9 & \num{52909805.30} \\
-Inexigibilidade & 42 & 13,4 & \num{3732014.57} \\
-Concorrência Eletrônica & 7 & 2,2 & \num{16241915.29} \\
-\midrule
-\textbf{Total} & \textbf{314} & \textbf{100} & \textbf{\num{137612572.74}} \\
+2022 & 16 & \num{3958964} & 14 \\
+2023 & 69 & \num{31578499} & 39 \\
+2024 & 156 & \num{50070710} & 61 \\
+2025 & 71 & \num{51013781} & 42 \\
+2026 & 2 & \num{990619} & 2 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-O amparo legal mais utilizado é o Art. 75, inciso II da Lei 14.133/2021 (129 processos), que autoriza dispensa para contratações abaixo de R\$ 50.000,00. Em seguida, o Art. 28, I (Pregão para bens e serviços comuns, 72 processos) e o Art. 75, IX (37 processos), que trata de contratação de empresa pública de TI.
+\subsection{Custo de oportunidade da contratação direta (QP1)}
 
-\subsection{Análise de valores e economicidade}
-
-Dos 314 processos, 303 possuem valor estimado registrado e 276 possuem valor homologado (ambos não nulos e abaixo de R\$ 1 bilhão, excluindo outliers de cadastro). O valor total estimado foi de R\$ 198,6 milhões, enquanto o homologado totalizou R\$ 137,6 milhões, resultando em economicidade global de 30,7\%.
-
-A mediana dos valores homologados é de R\$ 25.944,00, indicando predominância de contratações de menor porte. Apenas 31 processos (9,9\%) utilizaram o Sistema de Registro de Preços (SRP).
-
-O Pregão Eletrônico apresenta o maior valor médio por processo (R\$ 979.811,21), seguido pela Concorrência Eletrônica (R\$ 2.320.273,61 em apenas 7 processos). A Inexigibilidade apresenta média significativamente menor (R\$ 88.857,49), concentrando-se em serviços de fornecedor exclusivo.
-
-\subsection{Distribuição geográfica}
-
-A distribuição por UF (Tabela~\ref{tab:uf}) revela concentração nas regiões Sudeste e Sul, com Minas Gerais liderando (60 processos), seguida por Paraná (31) e Distrito Federal (28).
+A Tabela~\ref{tab:economicidade} responde à QP1. O Pregão Eletrônico gera economicidade de 18,3\%, enquanto a Dispensa atinge apenas 5,3\% --- uma diferença de 3,5$\times$. A Inexigibilidade apresenta economicidade nula (0,0\%), pois não há competição. A Concorrência Eletrônica alcança 11,3\%.
 
 \begin{table}[ht]
 \centering
-\caption{Distribuição geográfica das contratações de nuvem (top 10 UFs)}
-\label{tab:uf}
-\begin{tabular}{lr}
+\caption{Economicidade por modalidade de contratação}
+\label{tab:economicidade}
+\begin{tabular}{lrrrr}
 \toprule
-\textbf{UF} & \textbf{Processos} \\
+\textbf{Modalidade} & \textbf{n} & \textbf{Eco (\%)} & \textbf{Val. est. (R\$)} & \textbf{Val. hom. (R\$)} \\
 \midrule
-MG & 60 \\
-PR & 31 \\
-DF & 28 \\
-RS & 25 \\
-RJ & 24 \\
-SP & 23 \\
-BA & 12 \\
-PE & 11 \\
-PA & 11 \\
-PB & 11 \\
+Pregão Eletrônico & 54 & 18,3 & \num{64767528} & \num{52909805} \\
+Concorrência Eletrônica & 7 & 11,3 & \num{18312782} & \num{16241915} \\
+Dispensa & 167 & 5,3 & \num{64573268} & \num{61149894} \\
+Inexigibilidade & 42 & 0,0 & \num{3732015} & \num{3732015} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Instituições mais ativas}
+O custo de oportunidade é expressivo: se os R\$ 64,6M em dispensas tivessem alcançado a mesma economicidade do Pregão (18,3\%), a economia adicional seria de aproximadamente R\$ 8,4M.
 
-As instituições com maior número de processos de nuvem são: UTFPR (18), UFMG (15), IFMG (14), UFPA (9), IFES (9) e UFRJ (9). A concentração em poucas instituições sugere heterogeneidade significativa na maturidade digital entre as autarquias.
+\subsection{Indícios de fragmentação de despesas (QP2)}
 
-\subsection{Tipo de serviço contratado}
+Foram identificadas 14 instituições com 3 ou mais dispensas de licitação para nuvem no mesmo exercício fiscal, totalizando R\$ 11,5 milhões em valores potencialmente fragmentados. A Tabela~\ref{tab:fragmentacao} apresenta os casos mais relevantes.
 
-A análise textual dos objetos contratuais permitiu a seguinte categorização: serviços genéricos de nuvem e hospedagem (243, 77,4\%), SaaS (54, 17,2\%), IaaS (10, 3,2\%) e PaaS (1, 0,3\%). A predominância de descrições genéricas (``hospedagem'', ``nuvem'', ``cloud'') indica baixa especificidade técnica nos objetos contratuais, o que dificulta a classificação precisa das soluções contratadas.
+\begin{table}[ht]
+\centering
+\caption{Instituições com indícios de fragmentação (top 5)}
+\label{tab:fragmentacao}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Instituição} & \textbf{Ano} & \textbf{Dispensas} & \textbf{Valor (R\$)} \\
+\midrule
+CAU/BR & 2025 & 3 & \num{8767205} \\
+UnB & 2024 & 6 & \num{1446977} \\
+UFAM & 2025 & 3 & \num{773381} \\
+IF (ES) & 2025 & 3 & \num{161376} \\
+IF (outro) & 2025 & 4 & \num{105903} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Destaque para a UnB com 6 dispensas no mesmo ano para objetos de nuvem, e o CAU/BR com 3 dispensas totalizando R\$ 8,7M --- valor que, individualmente, já ultrapassaria significativamente o limite do Art. 75, II (R\$ 50.000), sugerindo uso do Art. 75, IX (empresa pública de TI).
+
+\subsection{Qualidade dos dados do PNCP (QP3)}
+
+A análise de integridade dos registros revela:
+
+\begin{itemize}
+\item \textbf{3,2\%} dos processos sem valor estimado cadastrado (zero ou nulo);
+\item \textbf{12,1\%} sem valor de homologação (processo ainda em andamento ou omissão);
+\item \textbf{1 outlier} com valor estimado superior a R\$ 1 bilhão (erro de cadastro com ordens de grandeza);
+\item \textbf{0\%} de registros com valor homologado superior ao estimado (boa consistência nesse aspecto).
+\end{itemize}
+
+A ausência de 12,1\% dos valores de homologação compromete análises de economicidade e dificulta a auditoria automatizada. O outlier bilionário (presente nos totais brutos) distorce gravemente as médias se não tratado.
+
+\subsection{Especificidade técnica e economicidade (QP4)}
+
+Contrariando a hipótese inicial, não foi encontrada correlação significativa entre especificidade técnica do objeto e economicidade obtida:
+
+\begin{itemize}
+\item Processos com termos específicos (IaaS, PaaS, SaaS, AWS, Azure, etc.): \textbf{n=54}, economicidade \textbf{10,6\%};
+\item Processos com termos genéricos (nuvem, cloud, hospedagem): \textbf{n=216}, economicidade \textbf{11,9\%}.
+\end{itemize}
+
+Esse resultado sugere que o fator determinante para economicidade é a \textbf{modalidade de contratação} (competitiva vs. direta), e não a precisão da especificação técnica.
+
+\subsection{Perfil institucional}
+
+A distribuição por tipo de instituição revela: universidades federais lideram com 176 processos (56\%), seguidas por institutos federais (107 processos, 34\%) e outros (31, 10\%). Geograficamente, concentra-se em MG (60), PR (31), DF (28), RS (25) e RJ (24).
+
+O amparo legal nas 193 dispensas distribui-se em: Art. 75, II --- contratações até R\$ 50.000 (129 processos, 66,8\%); Art. 75, IX --- empresa pública de TI/SERPRO (37 processos, 19,2\%); Art. 75, XV --- fundações de apoio (14 processos, 7,3\%); e outros incisos (13 processos, 6,7\%).
 
 \section{Discussão}
 \label{sec:discussao}
 
-\subsection{Predominância da contratação direta}
+\subsection{O custo invisível da conveniência administrativa}
 
-O dado mais expressivo é que 61,5\% das contratações de nuvem no MEC ocorrem por Dispensa de Licitação. Esse padrão pode ser explicado por três fatores: (i) o limite de R\$ 50.000,00 do Art. 75, II é compatível com a mediana observada (R\$ 25.944,00); (ii) o Art. 75, IX permite contratação direta de empresas públicas de TI (como SERPRO e DATAPREV), utilizado em 37 processos; e (iii) a fragmentação de contratos maiores em múltiplas dispensas.
+O diferencial de economicidade entre Pregão (18,3\%) e Dispensa (5,3\%) quantifica um ``custo de conveniência'' que a literatura anterior apenas apontava qualitativamente. Cada R\$ 1 milhão contratado via Dispensa em vez de Pregão representa aproximadamente R\$ 130.000 em economia desperdiçada. Esse resultado corrobora a Súmula TCU 269 sobre a necessidade de vincular contratações de TI a resultados mensuráveis \cite{tcu2020acordao1503}.
 
-Esse cenário merece atenção, pois a contratação direta, embora legalmente amparada, pode comprometer a economicidade e a transparência quando utilizada de forma reiterada para um mesmo objeto. O TCU, no Acórdão 1.503/2020, recomenda que órgãos avaliem a viabilidade de contratações conjuntas e registros de preços para serviços de nuvem \cite{tcu2020acordao1503}.
+A inexigibilidade (economicidade 0\%) é esperada e não constitui anomalia --- processos com SERPRO/Dataprev são precificados via tabela institucional. Contudo, os 37 processos via Art. 75, IX merecem atenção: embora legalmente amparados, representam concentração de mercado em um fornecedor estatal sem incentivo competitivo.
 
-\subsection{Crescimento acelerado e maturidade heterogênea}
+\subsection{Fragmentação: conveniência ou irregularidade?}
 
-O crescimento de 875\% entre 2022 e 2024 reflete tanto a consolidação do PNCP como plataforma de registro quanto a efetiva ampliação da adoção de nuvem. Contudo, 55\% das autarquias não registraram nenhuma contratação de nuvem, indicando desigualdade de maturidade digital.
+A existência de 14 instituições com 3 ou mais dispensas para nuvem no mesmo ano levanta duas hipóteses: (i) os objetos são genuinamente distintos e independentes; ou (ii) houve fracionamento intencional para manter-se abaixo do limite de R\$ 50.000. O caso da UnB (6 dispensas, R\$ 1,4M) merece investigação aprofundada --- embora individualmente cada dispensa possa estar abaixo do limite, o volume agregado sugere que um Pregão seria a via adequada, com potencial economia de 18,3\% (R\$ 265.000).
 
-Instituições como UTFPR, UFMG e IFMG concentram grande parte dos processos, sugerindo que fatores como estrutura de TI, porte institucional e capacidade de planejamento influenciam diretamente a adoção.
+\subsection{PNCP como instrumento de auditoria: potencial e limitações}
 
-\subsection{Economicidade e eficiência alocativa}
+A taxa de 12,1\% de registros sem homologação limita a capacidade de auditoria automatizada. Mais criticamente, a API do PNCP não disponibiliza dados de fornecedor no endpoint de publicação, impossibilitando análises de concentração de mercado (HHI) que seriam fundamentais para avaliar riscos de \textit{lock-in} tecnológico.
 
-A economicidade de 30,7\% é expressiva, indicando que os processos competitivos (Pregão e Concorrência) geram descontos significativos sobre os valores estimados. Quando analisado isoladamente, o Pregão Eletrônico apresenta economicidade superior à Dispensa, corroborando a literatura sobre eficiência de certames competitivos \cite{nogueira2021contratacoes}.
+A presença de outlier bilionário confirma a necessidade de validação na entrada de dados --- recomendação prática para a equipe do PNCP.
 
-\subsection{Baixa especificidade técnica}
+\subsection{Maturidade heterogênea e o ``abismo digital''}
 
-A predominância de descrições genéricas nos objetos contratuais (77,4\% classificados apenas como ``nuvem/hospedagem/cloud'') sugere lacunas na especificação técnica dos Termos de Referência. Essa imprecisão dificulta: (i) a análise posterior da adequação da solução contratada; (ii) a comparação entre contratações similares; e (iii) a consolidação de demandas para registros de preços.
+O fato de 55\% das autarquias do MEC não registrarem nenhuma contratação de nuvem no PNCP é preocupante. Três explicações são possíveis: (i) essas instituições mantêm infraestrutura \textit{on-premises}; (ii) contratam via adesão a atas de outros órgãos (não registrada individualmente); ou (iii) simplesmente não adotaram soluções de nuvem. Qualquer cenário indica heterogeneidade de maturidade digital incompatível com uma política unificada de transformação.
 
-\subsection{Limitações e ameaças à validade}
+O uso marginal de SRP (9,9\%) confirma a oportunidade perdida de consolidação de demandas, conforme recomendação do Acórdão TCU 1.503/2020.
 
-A classificação por palavras-chave pode gerar falsos negativos (processos de nuvem com descrição genérica como ``serviços de TI'') e falsos positivos (menção incidental ao termo). Além disso, o PNCP foi instituído pela Lei 14.133/2021, e nem todos os processos do período 2022--2023 foram necessariamente registrados, o que pode subestimar os números dos primeiros anos.
+\subsection{Ameaças à validade}
+
+\textbf{Interna:} a classificação por palavras-chave pode gerar falsos negativos (descrições genéricas como ``serviços de TI'') e falsos positivos (menção incidental). \textbf{Externa:} resultados específicos ao recorte MEC --- outros ministérios podem apresentar padrões distintos. \textbf{Construto:} o PNCP foi instituído em 2021, e a adesão nos primeiros anos foi parcial.
 
 \section{Conclusão}
 \label{sec:conclusao}
 
-Este estudo apresentou o primeiro panorama empírico das contratações de serviços de computação em nuvem pelas autarquias federais do MEC, utilizando dados públicos do PNCP. Os resultados revelam um cenário de crescimento acelerado (875\% em dois anos), predominância de contratação direta (61,5\%), economicidade significativa (30,7\%) e heterogeneidade expressiva entre instituições (55\% sem nenhuma contratação de nuvem registrada).
+Este estudo apresentou o primeiro diagnóstico quantitativo das contratações de nuvem nas autarquias do MEC com dados do PNCP, respondendo às quatro questões de pesquisa propostas:
 
-Do ponto de vista prático, os achados subsidiam a elaboração de Estudos Técnicos Preliminares, indicando que: (i) há amplo espaço para consolidação de demandas via SRP (apenas 9,9\% dos processos utilizam esse instrumento); (ii) a padronização de Termos de Referência para nuvem poderia melhorar a comparabilidade e a eficiência; e (iii) políticas de incentivo à adoção devem considerar a heterogeneidade institucional.
+\begin{itemize}
+\item \textbf{QP1:} O custo de oportunidade da contratação direta é de 13 pontos percentuais de economicidade perdida (5,3\% vs. 18,3\%), estimado em R\$ 8,4M para o dataset analisado.
+\item \textbf{QP2:} 14 instituições apresentam indícios de fragmentação, com R\$ 11,5M em dispensas reiteradas.
+\item \textbf{QP3:} O PNCP apresenta 12,1\% de registros incompletos e não disponibiliza dados de fornecedor via API, limitando auditoria automatizada.
+\item \textbf{QP4:} A especificidade técnica do TR não influencia significativamente a economicidade --- o fator determinante é a modalidade competitiva.
+\end{itemize}
 
-Como trabalhos futuros, propõem-se: (i) ampliação do recorte para outros ministérios; (ii) análise textual dos Termos de Referência com técnicas de NLP para classificação automática; e (iii) estudo longitudinal após consolidação completa do PNCP.
+\textbf{Implicações práticas:} (i) consolidação de demandas via SRP reduziria custos e fragmentação; (ii) validação de dados na entrada do PNCP melhoraria auditabilidade; (iii) inclusão de dados de fornecedor na API permitiria análises de concentração de mercado.
+
+\textbf{Trabalhos futuros:} (i) extensão para outros ministérios; (ii) coleta de dados de fornecedores via endpoint de resultados para cálculo do HHI; (iii) análise textual de TRs com NLP para classificação automática de especificidade; (iv) estudo longitudinal após maturação completa do PNCP.
 
 \bibliographystyle{plain}
 \bibliography{references}
