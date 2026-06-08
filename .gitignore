@@ -1,40 +1,31 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
 .venv/
 venv/
-*.egg-info/
-dist/
-build/
+
+# Dados gerados (grandes ou transitórios)
+data/raw/contratacoes_json/
+data/coleta.log
+data/contratacoes_mec_nuvem.csv
+data/contratacoes_mec_todas.csv
+
+# LaTeX artefatos
+relatorio/*.aux
+relatorio/*.bbl
+relatorio/*.blg
+relatorio/*.log
+relatorio/*.out
+relatorio/*.fls
+relatorio/*.fdb_latexmk
+relatorio/*.synctex.gz
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
-nohup.out
-
-# LaTeX
-paper/*.aux
-paper/*.bbl
-paper/*.blg
-paper/*.log
-paper/*.out
-paper/*.toc
-paper/*.fls
-paper/*.fdb_latexmk
-paper/*.synctex.gz
-paper/*.pdf
-
-# Dados gerados (reproduzíveis via script)
-data/contratacoes_mec_nuvem.csv
-data/contratacoes_mec_todas.csv
-
-# Manter dados brutos históricos e lista de UASGs
-!data/raw/
-!data/uasgs_raw_data.json
+relatorio/*.pdf

@@ -2,74 +2,69 @@
 
 Repositório de dados, código e artigo referentes ao estudo exploratório-descritivo sobre as práticas de contratação de serviços de computação em nuvem pelas autarquias federais vinculadas ao Ministério da Educação (MEC), com base em dados públicos do Portal Nacional de Contratações Públicas (PNCP).
 
-## Resumo
-
-Este estudo analisa as contratações de serviços de computação em nuvem realizadas pelas autarquias federais vinculadas ao MEC (universidades, institutos federais e fundações), extraindo dados diretamente da API REST do PNCP. A pesquisa identifica padrões de modalidade de contratação, concentração de fornecedores, tipos de serviço (IaaS/PaaS/SaaS) e aderência ao marco normativo da Lei 14.133/2021.
-
 ## Estrutura do Repositório
 
 ```
 .
-├── src/                        # Código-fonte principal
-│   └── coletar_pncp.py        # Script de coleta via API PNCP (v1)
+├── src/                        # Script principal de coleta (API PNCP v1)
+│   └── coletar_pncp.py
+├── scripts/                    # Scripts auxiliares e versão anterior
+│   ├── database/               # Criação de tabelas e ingestão
+│   ├── get_contratacoes_*.py   # Coleta legada (Compras.gov.br)
+│   └── get_uasg.py             # Atualização da lista de autarquias
 ├── data/                       # Dados
-│   ├── uasgs_raw_data.json     # Lista de CNPJs das autarquias MEC
-│   └── raw/                    # Dados brutos de coletas anteriores
-├── paper/                      # Artigo LaTeX
-│   ├── main.tex                # Fonte do artigo
-│   ├── references.bib          # Referências bibliográficas
-│   └── assets/                 # Figuras e tabelas
-├── scripts/legacy/             # Scripts da versão anterior (preservados)
+│   ├── uasgs_raw_data.json     # Lista de 196 CNPJs das autarquias MEC
+│   └── raw/                    # Dados brutos de coletas anteriores (JSON)
+├── relatorio/                  # Artigo LaTeX (template SBC)
+│   ├── main.tex
+│   ├── references.bib
+│   └── sbc-template.sty
+├── docs/                       # Documentação complementar
+│   └── REPRODUCING.md          # Instruções de reprodução
 ├── requirements.txt            # Dependências Python
-├── REPRODUCING.md              # Instruções de reprodução completas
-└── README.md                   # Este arquivo
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ## Requisitos
 
 - Python 3.10+
-- Dependências: `pip install -r requirements.txt`
-- Acesso à internet (API PNCP é pública, sem autenticação)
+- `pip install -r requirements.txt`
+- Conexão à internet (API PNCP pública, sem autenticação)
+- texlive-full (para compilar o relatório)
 
 ## Uso Rápido
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/luizfpq/etp_nuvem_ifsp.git
+git clone git@github.com:luizfpq/etp_nuvem_ifsp.git
 cd etp_nuvem_ifsp
-
-# Instalar dependências
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # Coletar contratações de nuvem (2022-2026)
 python src/coletar_pncp.py --ano-inicio 2022 --output data/contratacoes_mec_nuvem.csv
 
-# Coletar TODAS as contratações do MEC (para análise completa)
+# Coletar TODAS (para análise de proporção)
 python src/coletar_pncp.py --ano-inicio 2022 --todas --output data/contratacoes_mec_todas.csv
 ```
 
-Consulte [REPRODUCING.md](REPRODUCING.md) para instruções detalhadas de reprodução.
+Consulte [docs/REPRODUCING.md](docs/REPRODUCING.md) para instruções detalhadas.
 
 ## Fonte de Dados
 
-Os dados são coletados da API REST do PNCP (Portal Nacional de Contratações Públicas), conforme art. 174 da Lei 14.133/2021. Todos os dados são públicos. Não há necessidade de autenticação.
+API REST do PNCP (Portal Nacional de Contratações Públicas), conforme art. 174 da Lei 14.133/2021. Todos os dados são públicos, sem autenticação.
 
 - Base URL: `https://pncp.gov.br/api/consulta/v1`
-- Endpoint principal: `GET /contratacoes/publicacao`
-- Recorte institucional: 195 autarquias vinculadas ao MEC (universidades federais, institutos federais, fundações)
+- Recorte: 196 autarquias vinculadas ao MEC (universidades, IFs, fundações)
 
 ## Autores
 
 - Luiz Fernando Postingel Quirino (UFMS/IFSP) — luiz.quirino@ufms.br
-- [Orientador a definir]
-
-## Publicações Relacionadas
-
-- Gonçalves, R. H. S., Santos, W. M., & Quirino, L. F. P. (2026). Detecção de Irregularidades em Contratações Públicas: Uma Abordagem com Machine Learning Baseada em Consenso entre Algoritmos. *REGRASP*, 11(1), 253-268.
 
 ## Licença
 
-Este projeto é disponibilizado sob licença [MIT](LICENSE) para o código e [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) para os dados e o artigo.
+Código: [MIT](LICENSE) | Dados e artigo: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Citação
 
@@ -78,6 +73,6 @@ Este projeto é disponibilizado sob licença [MIT](LICENSE) para o código e [CC
   author  = {Quirino, Luiz Fernando Postingel},
   title   = {Panorama das Contratações de Serviços de Computação em Nuvem nas Autarquias Federais do Ministério da Educação},
   year    = {2026},
-  note    = {Em preparação. Repositório: https://github.com/luizfpq/etp_nuvem_ifsp}
+  note    = {Repositório: https://github.com/luizfpq/etp_nuvem_ifsp}
 }
 ```
